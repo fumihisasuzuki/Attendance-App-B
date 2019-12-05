@@ -1,0 +1,13 @@
+<% if error_variable.errors.any? %>
+  <div id="error_explanation">
+    <div class="alert alert-danger">
+      <p>入力した内容に<%= error_variable.errors.count %>件のエラーがあります。</p>
+      The form contains <%= pluralize(error_variable.errors.count, "error") %>.
+    </div>
+    <ul>
+    <% error_variable.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
