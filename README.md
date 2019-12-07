@@ -22,3 +22,7 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+
+画面のレイアウトについては、「画面設計書」を正として実装しました。
+したがって、一部、画面遷移のレイアウトなどと異なる場合があります。
