@@ -1,0 +1,13 @@
+<% provide(:title, "login") %>
+<h1>ログイン</h1>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <%= render 'sessions/login_form' %>
+    <p>
+      <% unless logged_in? %>
+        ユーザー登録がまだの場合は<%= link_to "こちら", signup_path %>
+      <% end %>
+    </p>
+  </div>
+</div>

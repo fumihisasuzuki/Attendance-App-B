@@ -21,6 +21,21 @@ class UsersController < ApplicationController
   def edit
   end
   
+  def update
+    if @user.update_attributes(user_params)
+      flash[:success] = @user.name + 'のユーザー情報の更新に成功しました。'
+      redirect_to @user
+    else
+      render :edit
+    end
+  end
+  
+  def destroy
+    @user = User.find(params[:id])
+    @user.destroy
+    flash[:success] = @user.name + 'を削除しました。'
+    redirect_to users_path
+  end
   
   private
 
