@@ -9,7 +9,7 @@
   text-align: center;
 }
 
-/* 入力フォーム */
+/* 新規ユーザー入力フォーム */
 
 .label-signup {
   margin-top: 5px;
@@ -33,4 +33,15 @@
   td {
     vertical-align: middle;
   }  
+}
+
+
+/* 基本情報編集フォーム */
+
+.label-edit-basic-info {
+  margin-top: 20px;
+}
+
+.btn-edit-basic-info {
+  margin-top: 10px;
 }

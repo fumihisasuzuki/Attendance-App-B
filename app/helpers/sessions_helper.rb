@@ -36,6 +36,11 @@ module SessionsHelper
     end
   end
   
+  # 管理者を見つけて返します。
+  def admined_user
+    @admined_user ||= User.find_by(admin: true)
+  end
+  
   # 渡されたユーザーがログイン済みのユーザーであればtrueを返します。
   def current_user?(user)
     user == current_user
