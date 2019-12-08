@@ -2,12 +2,6 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-/* ユーザー情報テーブル */
-
-.user-table {
-  vertical-align: middle;
-  text-align: center;
-}
 
 /* 新規ユーザー入力フォーム */
 
@@ -35,6 +29,26 @@
   }  
 }
 
+
+/* ユーザー情報テーブル */
+
+.user-table {
+  vertical-align: middle;
+  text-align: center;
+}
+
+/* ユーザー勤怠情報テーブル */
+
+#table-attendances {
+  th {
+    vertical-align: middle;
+    text-align: center;
+  }
+  td {
+    vertical-align: middle;
+    text-align: center;
+  }
+}
 
 /* 基本情報編集フォーム */
 
