@@ -30,11 +30,30 @@
 }
 
 
-/* ユーザー情報テーブル */
+/* 基本情報編集フォーム */
 
-.user-table {
-  vertical-align: middle;
-  text-align: center;
+.label-edit-basic-info {
+  margin-top: 20px;
+}
+
+.btn-edit-basic-info {
+  margin-top: 10px;
+}
+
+
+/*show*/
+
+/* ユーザー情報テーブル */
+#user-table {
+  td {
+    vertical-align: bottom;
+    text-align: center;
+  }
+}
+
+.btn-arrow {
+  color: #808080;
+  border-color: #C0C0C0;
 }
 
 /* ユーザー勤怠情報テーブル */
@@ -50,19 +69,38 @@
   }
 }
 
-/* 基本情報編集フォーム */
-
-.label-edit-basic-info {
-  margin-top: 20px;
-}
-
-.btn-edit-basic-info {
-  margin-top: 10px;
-}
-
 /* ユーザー情報下ボタン */
 
+.btn-users-show-arrow {
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
 .btn-users-show {
-  margin-top: -10px;
-  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-bottom: 0px;
+  color: #000;
+  background-color: #EEEEEE;
+  border-color: #C0C0C0;
+}
+
+.btn-attendance {
+  color: #000;
+  background-color: #EEEEEE;
+  border-color: #C0C0C0;
+}
+
+
+/*edit_one_month.html*/
+
+.btn-cancel {
+  color: #000;
+  background-color: #EEEEEE;
+  border-color: #C0C0C0;
+}
+
+.btn-update_one_month {
+  color: #000;
+  background-color: #EEEEEE;
+  border-color: #C0C0C0;
 }
