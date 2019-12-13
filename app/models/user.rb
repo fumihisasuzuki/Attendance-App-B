@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   has_many :attendances, dependent: :destroy
   attr_accessor :remember_token
+  attr_accessor :serch
   
   before_save { self.email = email.downcase }
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
@@ -45,6 +46,12 @@ class User < ApplicationRecord
   # ユーザーのログイン情報を破棄します。
   def forget
     update_attribute(:remember_digest, nil)
+  end
+  
+  # ユーザー検索機能
+  def User.search(search)
+    return User.all unless search
+    User.where(['name LIKE ?', "%#{search}%"])
   end
   
 end

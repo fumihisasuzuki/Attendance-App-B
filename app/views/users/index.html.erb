@@ -2,6 +2,15 @@
 <div class="container">
   <h1>ユーザ一覧</h1>
   <div class="row">
+    <div class="col-md-3 col-md-offset-8">
+      <%= form_with url: users_path, method: :get, local: true do |f| %>
+        <%= f.label "ユーザー名検索", class: "label-serch" %>
+        <div style="display:inline-flex">
+          <%= f.search_field :searchword, class: "form-control-serch", placeholder: "キーワードを入力..." %>
+          <%= f.submit "検索", class: "btn btn-primary btn-serch" %>
+        </div>
+      <% end %>
+    </div>
     <div class="col-md-10 col-md-offset-1">
       <%= will_paginate %>
       <table class="table table-hover" id="table-users">

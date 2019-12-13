@@ -7,7 +7,7 @@ class UsersController < ApplicationController
   before_action :set_one_month, only: :show
   
   def index
-    @users = User.paginate(page: params[:page], per_page: 20)
+    @users = User.paginate(page: params[:page], per_page: 20).search(params[:searchword])
   end
   
   def new
@@ -25,7 +25,6 @@ class UsersController < ApplicationController
     end
   end
 
-  
   def show
     @worked_sum = @attendances.where.not(started_at: nil).count
   end
