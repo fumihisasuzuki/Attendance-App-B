@@ -41,7 +41,7 @@ Things you may want to cover:
 作成期間：2019/12/4 - 2019/12/15
 
 《URL》
-
+https://hidden-falls-34993.herokuapp.com/
 
 《ログインアカウント》
 管理者
@@ -50,7 +50,7 @@ Things you may want to cover:
 一般ユーザー
   メールアドレス：sample-1@email.com
   パスワード：password
-  ※　上記他、n=0..100に対して下記の通り作成
+  ※　上記他、n=0..99に対して下記の通り作成
   メールアドレス：sample-#{n+1}@email.com
   パスワード：password
 
