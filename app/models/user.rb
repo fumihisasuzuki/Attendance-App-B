@@ -54,4 +54,24 @@ class User < ApplicationRecord
     User.where(['name LIKE ?', "%#{search}%"])
   end
   
+  require 'csv'
+  
+  # csvインポート処理
+  def self.import(file)
+    # csv_data = CSV.read('member.csv', headers: true)
+    CSV.foreach(file.path, headers: true) do |row|
+      # IDが見つかれば、レコードを呼び出し、見つからなければ、新しく作成
+      user = find_by(id: row["id"]) || new
+      # CSVからデータを取得し、設定する
+      user.attributes = row.to_hash.slice(*updatable_attributes)
+      # 保存する
+      user.save
+    end
+  end
+
+  # インポートによる更新を許可するカラムを定義
+  def self.updatable_attributes
+    ["name", "email", "department", "employee_number", "uid", "basic_time", "designated_work_start_time", "designated_work_end_time", "superior", "admin", "password"]
+  end
+  
 end

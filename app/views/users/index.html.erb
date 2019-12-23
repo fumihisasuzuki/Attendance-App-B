@@ -2,7 +2,13 @@
 <div class="container">
   <h1>ユーザ一覧</h1>
   <div class="row">
-    <div class="col-md-3 col-md-offset-8">
+    <div class="col-md-3">
+      <%= form_with url: import_users_path, method: :post, local: true do |f| %>
+        <%= f.file_field :file %>
+        <%= f.submit "CSVをインポート", class: "btn btn-primary btn-block" %>
+      <% end %>
+    </div>
+    <div class="col-md-3 col-md-offset-5">
       <%= form_with url: users_path, method: :get, local: true do |f| %>
         <%= f.label "ユーザー名検索", class: "label-serch" %>
         <div style="display:inline-flex">
@@ -14,27 +20,44 @@
     <div class="col-md-10 col-md-offset-1">
       <%= will_paginate %>
       <table class="table table-hover" id="table-users">
-        
         <tbody>
+          
           <% @users.each do |user| %>
-            <tr>
-              <td>
-                <%= link_to "#{user.name}", user_path(user) %>
-                 | 
-                <%= link_to "基本情報編集", edit_basic_info_user_path(current_user) %>
-                <% unless user.admin? %>
-                   | 
-                  <%= link_to "削除", 
-                    user_path(user),
-                    method: :delete,
-                    data: {confirm: "#{user.name}を削除します。よろしいですか？"} 
-                  %>
-                <% end %>
-              </td>
-            </tr>
+          <tr>
+            
+            <td><%= "#{user.name}" %>
+              <%= link_to "削除", 
+                user_path(user), 
+                method: :delete, 
+                data: {confirm: "「#{user.name}」の情報を全て削除します。よろしいですか？"}, 
+                class: "btn btn-primary"
+              %>
+              
+            <div class="accordion" id="accordion" role="tablist" aria-multiselectable="true">
+              <div class="card">
+                <% headingid="heading"+user.id.to_s %>
+                <% collapseid_for_href="#collapse"+user.id.to_s %>
+                <% collapseid="collapse"+user.id.to_s %>
+                <div class="card-header" role="tab" id="<%= headingid %>">
+                  <h5 class="mb-0">
+                    <a class="btn btn-primary" data-toggle="collapse" href="<%= collapseid_for_href %>" role= aria-expanded="false" aria-controls="<%= collapseid %>">
+                      編集
+                    </a>
+                  </h5>
+                </div><!-- /.card-header -->
+                <div id="<%= collapseid %>" class="collapse data-parent" role="tabpanel" aria-labelledby="<%= headingid %>" data-parent="#accordion">
+                  <div class="card-body">
+                    アコーディオンのコンテンツ
+                  </div><!-- /.card-body -->
+                </div><!-- /.collapse -->
+              </div><!-- /.card -->
+            </div>
+            
+            </td>
+          </tr>
           <% end %>
+          
         </tbody>
-
       </table>
       <%= will_paginate %>
     </div>
