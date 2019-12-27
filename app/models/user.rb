@@ -54,6 +54,7 @@ class User < ApplicationRecord
     User.where(['name LIKE ?', "%#{search}%"])
   end
   
+  # csvを要求
   require 'csv'
   
   # csvインポート処理
@@ -69,9 +70,10 @@ class User < ApplicationRecord
     end
   end
 
-  # インポートによる更新を許可するカラムを定義
+  # csvインポートによる更新を許可するカラムを定義
   def self.updatable_attributes
     ["name", "email", "department", "employee_number", "uid", "basic_time", "designated_work_start_time", "designated_work_end_time", "superior", "admin", "password"]
   end
   
+
 end

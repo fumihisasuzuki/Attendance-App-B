@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
   before_action :logged_in_user, except: [:new, :create]
-  before_action :correct_user, only: [:edit, :update]
+#  before_action :correct_user, only: [:edit, :update]
   before_action :admin_user, only: [:index, :destroy, :edit_basic_info, :update_basic_info]
   before_action :admin_or_correct_user, only: [:show, :edit, :update]
   before_action :set_one_month, only: :show
@@ -69,18 +69,40 @@ class UsersController < ApplicationController
   def import
     # fileはtmpに自動で一時保存される
     User.import(params[:file])
-    flash[:success] = "#{:file}のインポートに成功しました。"
+    flash[:success] = "#{:file}をインポートしました。"
     redirect_to users_url
   end
+
+  def index_members_during_work
+    @users_during_work=[]
+    users = User.all
+    users.each do |user|
+      attendance_status = user.attendances.find_by(worked_on: Date.current)
+      if attendance_status && attendance_status.started_at
+        @users_during_work << user unless attendance_status.finished_at
+      end
+    end
+#    @users = @users.paginate(page: params[:page], per_page: 20)
+  end
   
+
   private
 
     def user_params
-      params.require(:user).permit(:name, :email, :department, :password, :password_confirmation)
+      params.require(:user).permit(:name,
+                                   :email,
+                                   :department,
+                                   :employee_number,
+                                   :uid,
+                                   :password,
+                                   :password_confirmation,
+                                   :basic_time,
+                                   :designated_work_start_time,
+                                   :designated_work_end_time)
     end
     
     def basic_info_params
       params.require(:user).permit(:basic_time, :work_time)
     end
-    
+  
 end

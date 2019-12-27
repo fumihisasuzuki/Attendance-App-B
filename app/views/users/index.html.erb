@@ -1,4 +1,6 @@
 <% provide(:title, 'Users') %>
+<% provide(:class_text, 'user--edit') %>
+<% provide(:button_text, '編集する') %>
 <div class="container">
   <h1>ユーザ一覧</h1>
   <div class="row">
@@ -23,38 +25,43 @@
         <tbody>
           
           <% @users.each do |user| %>
+          
           <tr>
-            
-            <td><%= "#{user.name}" %>
+            <td>
+              <p><%= "#{user.name}" %></p>
+              | 
               <%= link_to "削除", 
                 user_path(user), 
                 method: :delete, 
                 data: {confirm: "「#{user.name}」の情報を全て削除します。よろしいですか？"}, 
                 class: "btn btn-primary"
               %>
-              
-            <div class="accordion" id="accordion" role="tablist" aria-multiselectable="true">
-              <div class="card">
-                <% headingid="heading"+user.id.to_s %>
-                <% collapseid_for_href="#collapse"+user.id.to_s %>
-                <% collapseid="collapse"+user.id.to_s %>
-                <div class="card-header" role="tab" id="<%= headingid %>">
-                  <h5 class="mb-0">
-                    <a class="btn btn-primary" data-toggle="collapse" href="<%= collapseid_for_href %>" role= aria-expanded="false" aria-controls="<%= collapseid %>">
-                      編集
-                    </a>
-                  </h5>
-                </div><!-- /.card-header -->
-                <div id="<%= collapseid %>" class="collapse data-parent" role="tabpanel" aria-labelledby="<%= headingid %>" data-parent="#accordion">
-                  <div class="card-body">
-                    アコーディオンのコンテンツ
-                  </div><!-- /.card-body -->
-                </div><!-- /.collapse -->
-              </div><!-- /.card -->
-            </div>
-            
             </td>
           </tr>
+          <tr>
+            <td style="background: #EEEEEE;">
+              <div class="accordion" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="card">
+                  <% headingid="heading"+user.id.to_s %>
+                  <% collapseid_for_href="#collapse"+user.id.to_s %>
+                  <% collapseid="collapse"+user.id.to_s %>
+                  <div class="card-header" role="tab" id="<%= headingid %>">
+                    <h5 class="mb-0">
+                      <a class="btn btn-primary btn-lg" data-toggle="collapse" href="<%= collapseid_for_href %>" role= aria-expanded="false" aria-controls="<%= collapseid %>">
+                        編集
+                      </a>
+                    </h5>
+                  </div><!-- /.card-header -->
+                  <div id="<%= collapseid %>" class="collapse data-parent" role="tabpanel" aria-labelledby="<%= headingid %>" data-parent="#accordion">
+                    <div class="card-body">
+                      <%= render 'user_form', user: user %>
+                    </div><!-- /.card-body -->
+                  </div><!-- /.collapse -->
+                </div><!-- /.card -->
+              </div><!-- /.accordion -->
+            </td>
+          </tr>
+            
           <% end %>
           
         </tbody>

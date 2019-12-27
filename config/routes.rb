@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'bases/new'
+
   root 'static_pages#top'
   get '/signup', to: 'users#new'
   
@@ -6,6 +8,7 @@ Rails.application.routes.draw do
   get    '/login', to: 'sessions#new'
   post   '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'
+
   
   resources :users do
     member do
@@ -16,6 +19,9 @@ Rails.application.routes.draw do
     end
     resources :attendances, only: :update
     collection { post :import }
+    get 'index_members_during_work'
   end
-      
+  
+  resources :bases
+
 end
