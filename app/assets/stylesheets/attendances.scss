@@ -1,3 +1,19 @@
 // Place all the styles related to the Attendances controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+/* 残業申請テーブル */
+
+#table-overtime {
+  tr {
+    vertical-align: middle;
+    text-align: center;
+    white-space: nowrap;
+  }
+  td {
+    vertical-align: top;
+    text-align: center;
+    white-space: nowrap;
+  }
+}

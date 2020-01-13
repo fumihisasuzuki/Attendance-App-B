@@ -1,5 +1,36 @@
 <div class="modal-dialog modal-lg modal-dialog-center">
   <div class="modal-content">
-    aaa
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h4 style="text-align:center">【残業申請】</h4>
+    </div>
+    <%= form_with(model: @attendance, url: update_overtime_user_attendance_path(@user, @attendance), local: true, method: :patch) do |f| %>
+      <%= render 'shared/error_messages', error_variable: @attendance %>
+      <div style="margin: 20px">
+        <table class="table table-bordered" id="table-overtime">
+          <thead>
+            <tr>
+              <td>日付</td>
+              <td>曜日</td>
+              <td>終了予定時刻</td>
+              <td>翌日</td>
+              <td>業務処理内容</td>
+              <td>承認者確認㊞</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><%= l(@attendance.worked_on, format: :short) %></td>
+              <td><%= $days_of_the_week[@attendance.worked_on.wday] %></td>
+              <td><%= f.time_select :overtime_finish_at, class: "form-control", include_blank: true, ignore_data:true %></td>
+              <td><%= f.check_box :next_day, id: "next-day" %></td>
+              <td><%= f.text_field :overtime_note, class: "form-control" %></td>
+              <td><%= f.select :overtime_approver, @users_superior.map { |user| user.name }, class: "form-control" %></td>
+            </tr>
+          </tbody>
+        </table>
+        <%= f.submit "変更を送信する", class: "btn btn-primary btn-block" %>
+      </div>
+    <% end %>
   </div>
 </div>
