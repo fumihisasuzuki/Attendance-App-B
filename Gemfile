@@ -7,7 +7,6 @@ gem 'faker' # 実際に存在していそうな名前を生成
 gem 'bootstrap-sass' # bootstrap
 gem 'will_paginate' # ページネーション
 gem 'bootstrap-will_paginate' # ページネーションにbootstrapを適用
-gem 'rounding' # floor_to(xx.minutes) 時刻をxx単位に切り捨て
 gem 'puma',         '~> 3.7'
 gem 'sass-rails',   '~> 5.0'
 gem 'uglifier',     '>= 1.3.0'
@@ -15,7 +14,9 @@ gem 'coffee-rails', '~> 4.2'
 gem 'jquery-rails'
 gem 'turbolinks',   '~> 5'
 gem 'jbuilder',     '~> 2.5'
+gem 'rounding' # floor_to(xx.minutes) 時刻をxx単位に切り捨て
 gem 'roo' # Excel, CSV, OpenOffice, GoogleSpreadSheetを開くことが可能
+gem 'enum' # enumメソッドを使える
 
 group :development, :test do
   gem 'sqlite3'

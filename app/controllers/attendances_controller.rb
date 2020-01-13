@@ -46,6 +46,18 @@ class AttendancesController < ApplicationController
     redirect_to attendances_edit_one_month_user_url(date: params[:date])
   end
     
+  def edit_overtime
+    @user = User.find_by(id: params[:user_id])
+    @users_superior = User.where(superior: true)
+    @attendance = Attendance.find_by(user_id: params[:user_id], id: params[:id])
+  end
+  
+  def update_overtime
+    @user = User.find_by(id: params[:user_id])
+    @attendance.overtime_status = 1
+    @attendance.update_attribute
+  end
+  
   private
     # 1ヶ月分の勤怠情報を扱います。
     def attendances_params
