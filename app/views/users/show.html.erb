@@ -70,14 +70,12 @@
 
     <tbody>
       <% @attendances.each do |day| %>
-        <% 
-          css_class_of_the_day = 
-          case $days_of_the_week[day.worked_on.wday]
-          when '土'
-            'text-primary'
-          when '日'
-            'text-danger'
-          end
+        <% css_class_of_the_day = case $days_of_the_week[day.worked_on.wday]
+                                    when '土'
+                                      'text-primary'
+                                    when '日'
+                                      'text-danger'
+                                  end
         %>
         <tr>
           <td><%= link_to "残業申請", edit_overtime_user_attendance_path(@user, day), remote: true, class: "btn btn-primary" %></td>

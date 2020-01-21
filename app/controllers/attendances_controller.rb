@@ -33,8 +33,8 @@ class AttendancesController < ApplicationController
   def update_one_month
     ActiveRecord::Base.transaction do # トランザクションを開始します。
       attendances_params.each do |id, item|
-        @attendance = Attendance.find(id)
-        @attendance.update_attributes!(item)
+        attendance = Attendance.find(id)
+        attendance.update_attributes!(item)
       end
     end
     flash[:success] = "1ヶ月分の勤怠情報を更新しました。"
@@ -45,7 +45,7 @@ class AttendancesController < ApplicationController
 #    flash[:danger] = @attendance.errors.presence.to_s || nil
     redirect_to attendances_edit_one_month_user_url(date: params[:date])
   end
-    
+  
   def edit_overtime
     @user = User.find_by(id: params[:user_id])
     @users_superior = User.where(superior: true)
@@ -54,13 +54,32 @@ class AttendancesController < ApplicationController
   
   def update_overtime
     @user = User.find_by(id: params[:user_id])
-    @attendance.overtime_status = 1
-    @attendance.update_attribute
+    @attendance = Attendance.find(params[:id])
+    @attendance.update_attributes(attendance_params)
+    @attendance.update_attributes(overtime_status: 1)
+    flash[:success] = '残業を申請しました。'
+    #flash[:info] = @attendance.worked_on + 'の残業を' + @attendance.overtime_approver + 'に申請しました。'
+    redirect_to user_url(id: params[:user_id])
   end
   
   private
     # 1ヶ月分の勤怠情報を扱います。
     def attendances_params
       params.require(:user).permit(attendances: [:started_at, :finished_at, :note])[:attendances]
+    end
+    
+    # その日の勤怠情報を扱います。
+    def attendance_params
+      params.require(:attendance).permit(:started_at,
+                                         :finished_at,
+                                         :note,
+                                         :status,
+                                         :approver,
+                                         :status_one_month,
+                                         :approver_one_month,
+                                         :overtime_finish_at,
+                                         :overtime_status,
+                                         :overtime_approver,
+                                         :overtime_note)
     end
 end
