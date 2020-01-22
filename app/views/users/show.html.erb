@@ -30,7 +30,7 @@
 </div>
 
 <div>
-  <%= link_to "【残業申請のお知らせ】", edit_approving_overtime_user_path(@user), remote: true, class: "" %>
+  <%= link_to "【残業申請のお知らせ】", attendances_edit_approving_overtime_user_path(@user), remote: true, class: "" %>
 </div>
 
 <div style="display:inline-flex">
@@ -102,11 +102,18 @@
             <% end %>
           </td>
           <td><%= day.note %></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <%  if day.overtime_status > 0 %>
+            <td><%= l(day.finished_at, format: :hour) %></td>
+            <td><%= l(day.finished_at.floor_to(time_unit.minutes), format: :minute) %></td>
+            <td><%= working_overtimes(@user.designated_work_end_time, day.finished_at) %></td>
+            <td><%= day.overtime_note %></td>
+          <% else %>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          <% end %>
+          <td><%= day.overtime_approver %></td>
         </tr>
       <% end %>
     </tbody>

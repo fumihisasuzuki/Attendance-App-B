@@ -1,5 +1,5 @@
 class AttendancesController < ApplicationController
-  before_action :set_user, only: :edit_one_month
+  before_action :set_user, only: [:edit_one_month, :edit_approving_overtime]
   before_action :logged_in_user, only: [:update, :edit_one_month]
   before_action :set_one_month, only: :edit_one_month
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
@@ -57,9 +57,23 @@ class AttendancesController < ApplicationController
     @attendance = Attendance.find(params[:id])
     @attendance.update_attributes(attendance_params)
     @attendance.update_attributes(overtime_status: 1)
-    flash[:success] = '残業を申請しました。'
-    #flash[:info] = @attendance.worked_on + 'の残業を' + @attendance.overtime_approver + 'に申請しました。'
+    # flash[:success] = '残業を申請しました。'
+    flash[:info] = "#{@attendance.worked_on}の残業を#{@attendance.overtime_approver}に申請しました。"
     redirect_to user_url(id: params[:user_id])
+  end
+  
+  def edit_approving_overtime
+    # 名前で検索！？同性同名の人がいるかもしれないし、idの方が良いね。
+    @attendances = Attendance.where(overtime_approver: @user.name)
+    # @userに残業申請を上呈しているユーザーの一覧
+    @users_need_approvals = []
+    users = User.all
+    users.each do |user|
+      @users_need_approvals << user if user.attendances.find_by(overtime_approver: @user.name)
+    end
+  end
+  
+  def update_approving_overtime
   end
   
   private

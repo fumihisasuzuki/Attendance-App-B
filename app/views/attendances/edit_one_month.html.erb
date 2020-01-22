@@ -34,11 +34,11 @@
               <% if Date.current < day.worked_on %>
                 <td style="color: #CCC;"><%= attendance.time_select :started_at, disabled: true, class: "form-control", include_blank: true %></td>
                 <td style="color: #CCC;"><%= attendance.time_select :finished_at, disabled: true, class: "form-control", include_blank: true %></td>
-                <td><%= f.check_box :next_day, disabled: true, id: "next-day" %></td>
+                <td><%= attendance.check_box :next_day, disabled: true, id: "next-day" %></td>
               <% else %>
                 <td><%= attendance.time_field :started_at, class: "form-control" %></td>
                 <td><%= attendance.time_field :finished_at, class: "form-control" %></td>
-                <td><%= f.check_box :next_day, id: "next-day" %></td>
+                <td><%= attendance.check_box :next_day, id: "next-day" %></td>
               <% end %>
               <td>
                 <% if day.started_at.present? && day.finished_at.present? %>
