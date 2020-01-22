@@ -29,6 +29,10 @@
   </table>
 </div>
 
+<div>
+  <%= link_to "【残業申請のお知らせ】", edit_approving_overtime_user_path(@user), remote: true, class: "" %>
+</div>
+
 <div style="display:inline-flex">
   <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
   <%= link_to "CSV出力", user_path(format: :csv), class: "btn btn-primary" %>
@@ -126,3 +130,4 @@
 
 <!--モーダルウインドウ表示-->
 <div id="edit-overtime" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="edit-approving-overtime" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
