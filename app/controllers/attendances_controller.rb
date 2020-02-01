@@ -1,9 +1,10 @@
 class AttendancesController < ApplicationController
-  before_action :set_user, only: [:edit_one_month, :edit_approving_overtime]
+  before_action :set_user, only: [:edit_one_month, :edit_approving_overtime, :update_approving_overtime]
   before_action :logged_in_user, only: [:update, :edit_one_month]
   before_action :set_one_month, only: :edit_one_month
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
-  
+  before_action :set_users_need_approvals, only: [:edit_approving_overtime, :update_approving_overtime]
+
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
 
   def update
@@ -57,29 +58,55 @@ class AttendancesController < ApplicationController
     @attendance = Attendance.find(params[:id])
     @attendance.update_attributes(attendance_params)
     @attendance.update_attributes(overtime_status: 1)
-    # flash[:success] = '残業を申請しました。'
     flash[:info] = "#{@attendance.worked_on}の残業を#{@attendance.overtime_approver}に申請しました。"
     redirect_to user_url(id: params[:user_id])
   end
   
   def edit_approving_overtime
-    # 名前で検索！？同性同名の人がいるかもしれないし、idの方が良いね。
+    # 名前で検索！？同性同名の人がいるかもしれないし、idの方が良いね。要修正。
     @attendances = Attendance.where(overtime_approver: @user.name)
-    # @userに残業申請を上呈しているユーザーの一覧
-    @users_need_approvals = []
-    users = User.all
-    users.each do |user|
-      @users_need_approvals << user if user.attendances.find_by(overtime_approver: @user.name)
-    end
   end
   
   def update_approving_overtime
+    # 名前で検索！？同性同名の人がいるかもしれないし、idの方が良いね。要修正。
+#    @attendances = Attendance.where(overtime_approver: @user.name)
+#    @users_need_approvals.each do |user|
+#      debugger
+#      attendances = @attendances.where(user_id: user.id)
+#    @attendances_need_approvals.each do |attendance|
+    approve_overtime_params.each do |id, item|
+      #debugger
+        attendance = Attendance.find(id)
+        attendance.update_attributes(item)
+#      attendance.update_attributes(approve_overtime_params)
+#      attendances_params.each do |id, item|
+#        attendance = Attendance.find(id)
+#        attendance.update_attributes!(item)
+#      end
+    end
+    flash[:info] = "残業申請者に承認結果を送付しました。"
+    redirect_to user_url(date: params[:date])
   end
   
   private
-    # 1ヶ月分の勤怠情報を扱います。
+    # Userに紐づいた複数の勤怠情報を扱います。
     def attendances_params
-      params.require(:user).permit(attendances: [:started_at, :finished_at, :note])[:attendances]
+      params.require(:user).permit(attendances: [:started_at, :finished_at, :note, :overtime_status])[:attendances]
+    end
+    
+    # 残業時間の勤怠情報を扱います。
+    def approve_overtime_params
+      params.require(:attendance).permit(attendances_need_approvals: [:overtime_status,
+                                         :overtime_approver,
+                                         :overtime_note])[:attendances_need_approvals]
+    end
+    
+    def approve_overtime_params2
+      params.require(:user).permit(attendances: [
+                                         :overtime_finish_at,
+                                         :overtime_status,
+                                         :overtime_approver,
+                                         :overtime_note])[:attendances]
     end
     
     # その日の勤怠情報を扱います。

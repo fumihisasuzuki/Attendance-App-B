@@ -2,6 +2,9 @@ class Attendance < ApplicationRecord
   belongs_to :user
   validates :worked_on, presence: true
   validates :note, length: { maximum: 50 }
+  enum status:[:non, :applying, :approved, :not_approved] # 変更申請ステータス
+  enum status_one_month:[:non_one_month, :applying_one_month, :approved_one_month, :not_approved_one_month] # 一か月分の申請ステータス
+  enum overtime_status:[:non_overtime, :applying_overtime, :approved_overtime, :not_approved_overtime] # 残業申請のステータス
   
   # 出勤時間が存在しない場合、退勤時間は無効
   validate :finished_at_is_invalid_without_a_started_at

@@ -66,4 +66,16 @@ class ApplicationController < ActionController::Base
     redirect_to root_url
   end
   
+  # @userに残業申請を上呈しているユーザーの一覧
+  def set_users_need_approvals
+    @users_need_approvals = []
+    users = User.all
+    users.each do |user|
+      @users_need_approvals << user if user.attendances.find_by(overtime_approver: @user.name)
+    end
+    
+    @attendances_need_approvals = Attendance.includes(:user).references(:user).where(overtime_approver: @user.name) #('users.*, attendances.*')
+    #debugger
+  end
+  
 end

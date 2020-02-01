@@ -5,41 +5,24 @@ ja:
       attendance: 勤怠
       base: 拠点
     attributes:
-        user:
-          id: ID
-          name: 名前
-          email: メールアドレス
-          department: 所属
-          basic_time: 基本時間
-          work_time: 勤務時間
-          password: パスワード
-          password_confirmation: パスワード再入力
-          created_at: 作成日
-          updated_at: 更新日
-        attendance:
-          worked_on: 日付
-          started_at: 出勤時間
-          finished_at: 退勤時間
-          note: 備考
-          user: ユーザーID
-        base:
-          id: 拠点番号
-          name: 拠点名
-          type: 拠点種類
-  enums:
-    attendance:
-      status:
-          non: なし
-          applying: 申請中
-          approved: 承認
-          not_approved: 否認
-      status_one_month:
-          non_one_month: なし
-          applying_one_month: 申請中
-          approved_one_month: 承認
-          not_approved_one_month: 否認
-      overtime_status:
-          non_overtime: なし
-          applying_overtime: 申請中
-          approved_overtime: 承認
-          not_approved_overtime: 否認
+      user:
+        id: ID
+        name: 名前
+        email: メールアドレス
+        department: 所属
+        basic_time: 基本時間
+        work_time: 勤務時間
+        password: パスワード
+        password_confirmation: パスワード再入力
+        created_at: 作成日
+        updated_at: 更新日
+      attendance:
+        worked_on: 日付
+        started_at: 出勤時間
+        finished_at: 退勤時間
+        note: 備考
+        user: ユーザーID
+      base:
+        id: 拠点番号
+        name: 拠点名
+        type: 拠点種類

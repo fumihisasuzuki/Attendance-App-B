@@ -4,10 +4,10 @@
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     </div>
     <div class="modal-body" style="margin: 20px">
-      <%= form_with(model: @user, url: attendances_update_approving_overtime_user_path(@user), local: true, method: :patch) do |f| %>
+      <%= form_with(model: @attendances_need_approvals, url: attendances_update_approving_overtime_user_path(@user), local: true, method: :patch) do |f| %>
         <% @users_need_approvals.each do |user| %>
           <h4 style="text-align:center">【<%= user.name %>からの残業申請】</h4>
-          <table class="table table-bordered" id="table-overtime">
+          <table class="table table-bordered" id="table-approving-overtime">
             <thead>
               <tr>
                 <td>日付</td>
@@ -22,9 +22,9 @@
               </tr>
             </thead>
             <tbody>
-              <% @attendances.each do |day| %>
+              <% @attendances_need_approvals.each do |day| %>
                 <% if day.user_id == user.id %>
-                  <%= f.fields_for "attendances[]", day do |attendance| %>
+                  <%= f.fields_for "attendances_need_approvals[]", day do |attendance| %>
                     <tr>
                       <td><%= l(day.worked_on, format: :short) %></td>
                       <td><%= $days_of_the_week[day.worked_on.wday] %></td>
@@ -32,7 +32,7 @@
                       <td><%= l(user.designated_work_end_time.floor_to(time_unit.minutes), format: :time) %></td>
                       <td><%= working_overtimes(user.designated_work_end_time, day.finished_at) %></td>
                       <td><%= day.overtime_note %></td>
-                      <td><%= attendance.select :overtime_status, class: "form-control" %></td>
+                      <td><%= attendance.select :overtime_status, Attendance.overtime_statuses.keys.map { |k| [I18n.t("enums.attendance.overtime_status.#{k}"), k]} %></td>
                       <td></td>
                       <td><%= link_to "確認", "#", class: "btn btn-primary" %></td>
                     </tr>

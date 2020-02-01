@@ -17,6 +17,7 @@ gem 'jbuilder',     '~> 2.5'
 gem 'rounding' # floor_to(xx.minutes) 時刻をxx単位に切り捨て
 gem 'roo' # Excel, CSV, OpenOffice, GoogleSpreadSheetを開くことが可能
 gem 'enum' # enumメソッドを使える
+gem 'enum_help' # enumメソッドの日本語化
 
 group :development, :test do
   gem 'sqlite3'
