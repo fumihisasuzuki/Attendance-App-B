@@ -123,4 +123,14 @@ p {
   overflow-x: scroll;
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
+  tr {
+    vertical-align: middle;
+    text-align: center;
+    white-space: nowrap;
+  }
+  td {
+    vertical-align: top;
+    text-align: center;
+    white-space: nowrap;
+  }
 }

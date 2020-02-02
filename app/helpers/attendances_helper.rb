@@ -16,12 +16,12 @@ module AttendancesHelper
   
   # 出勤時間と退勤時間を受け取り、在社時間を計算して返す
   def working_times(start, finish)
-      format("%.2f", (((finish.floor_to(time_unit.minutes) - start.floor_to(time_unit.minutes)) / 60 ) / 60.0))
+    format("%.2f", (((finish.floor_to(time_unit.minutes) - start.floor_to(time_unit.minutes)) / 60 ) / 60.0))
   end
   
   # 定時と残業予定時間を受け取り、時間外時間を計算して返す
   def working_overtimes(designatedtime, overtime)
-      format("%.2f", (((overtime.floor_to(time_unit.minutes) - designatedtime.floor_to(time_unit.minutes)) / 60 ) / 60.0))
+    format("%.2f", (((overtime.floor_to(time_unit.minutes) - designatedtime.floor_to(time_unit.minutes)) / 60 ) / 60.0))
   end
-  
+ 
 end

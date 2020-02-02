@@ -71,10 +71,15 @@ class ApplicationController < ActionController::Base
     @users_need_approvals = []
     users = User.all
     users.each do |user|
-      @users_need_approvals << user if user.attendances.find_by(overtime_approver: @user.name)
+      if user.attendances.find_by(overtime_approver: @user.name, overtime_status: 1)
+        @users_need_approvals << user
+      end
     end
+  end
     
-    @attendances_need_approvals = Attendance.includes(:user).references(:user).where(overtime_approver: @user.name) #('users.*, attendances.*')
+  # @userに残業申請を上呈している勤怠情報一覧
+  def set_attendances_need_approvals
+    @attendances_need_approvals = Attendance.includes(:user).references(:user).where(overtime_approver: @user.name).where(overtime_status: 1)
     #debugger
   end
   
