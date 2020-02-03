@@ -55,33 +55,33 @@ class AttendancesController < ApplicationController
   end
   
   def update_overtime
+    debugger
     @user = User.find_by(id: params[:user_id])
     @attendance = Attendance.find(params[:id])
+    if params[:attendance][:next_day] == "1"
+      #finish＋1日の処理
+      debugger
+    else
+      @attendance.update_attributes(finished_at: @attendance.worked_on)
+    end
     @attendance.update_attributes(attendance_params)
     @attendance.update_attributes(overtime_status: 1)
+      debugger
     flash[:info] = "#{@attendance.worked_on}の残業を#{@attendance.overtime_approver}に申請しました。"
     redirect_to user_url(id: params[:user_id])
   end
   
   def edit_approving_overtime
-    # 名前で検索！？同性同名の人がいるかもしれないし、idの方が良いね。要修正。
-    #@attendances = Attendance.where(overtime_approver: @user.name).where(overtime_status: 1)
   end
   
   def update_approving_overtime
-    # 名前で検索！？同性同名の人がいるかもしれないし、idの方が良いね。要修正。
-#    @attendances = Attendance.where(overtime_approver: @user.name)
-#    @users_need_approvals.each do |user|
-#      debugger
-#      attendances = @attendances.where(user_id: user.id)
-#    @attendances_need_approvals.each do |attendance|
     approve_overtime_params.each do |id, item|
-      debugger
+#      debugger
       if params[:approve_overtime][:"#{id}"] == "1"
-      debugger
+#      debugger
         attendance = Attendance.find(id)
         attendance.update_attributes(item)
-      debugger
+#      debugger
       end
     end
     flash[:info] = "残業申請者に承認結果を送付しました。"
@@ -97,8 +97,8 @@ class AttendancesController < ApplicationController
     # 残業時間の勤怠情報を扱います。
     def approve_overtime_params
       params.require(:attendance).permit(attendances_need_approvals: [:overtime_status,
-                                         :overtime_approver,
-                                         :overtime_note])[:attendances_need_approvals]
+                                                                     :overtime_approver,
+                                                                     :overtime_note])[:attendances_need_approvals]
     end
     
     # その日の勤怠情報を扱います。

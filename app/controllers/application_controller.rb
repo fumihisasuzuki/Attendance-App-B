@@ -71,6 +71,7 @@ class ApplicationController < ActionController::Base
     @users_need_approvals = []
     users = User.all
     users.each do |user|
+      # 名前で検索！？同性同名の人がいるかもしれないし、idの方が良いね。要修正。
       if user.attendances.find_by(overtime_approver: @user.name, overtime_status: 1)
         @users_need_approvals << user
       end
