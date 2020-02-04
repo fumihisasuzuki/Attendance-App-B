@@ -36,7 +36,17 @@ class AttendancesController < ApplicationController
     ActiveRecord::Base.transaction do # トランザクションを開始します。
       attendances_params.each do |id, item|
         attendance = Attendance.find(id)
-        attendance.update_attributes!(item)
+        if item[:"started_at"]
+          item[:"started_at"] = attendance.worked_on.to_s + " " + item[:"started_at"] + ":00"
+  #        debugger
+          finish_day = attendance.worked_on
+          finish_day += 1.day if params[:next_day][id] == "1"
+          item[:"finished_at"] = finish_day.to_s + " " + item[:"finished_at"] + ":00"
+  #        attendance.update_attributes(finished_at: attendance.finished_at + 1.day) if params[:next_day][id] == "1"
+  #        debugger
+          attendance.update_attributes!(item)
+  #        debugger
+        end
       end
     end
     flash[:success] = "1ヶ月分の勤怠情報を更新しました。"
@@ -58,16 +68,9 @@ class AttendancesController < ApplicationController
 #    debugger
     @user = User.find_by(id: params[:user_id])
     @attendance = Attendance.find(params[:id])
-      debugger
     @attendance.update_attributes(attendance_params)
     @attendance.update_attributes(overtime_status: 1)
-    if params[:attendance][:next_day] == "1"
-      #finish＋1日の処理
-      debugger
-      @attendance.update_attributes(finished_at: @attendance.finished_at + 1.day)
-      debugger
-    end
-      debugger
+    @attendance.update_attributes(finished_at: @attendance.finished_at + 1.day) if params[:attendance][:next_day] == "1"
     flash[:info] = "#{@attendance.worked_on}の残業を#{@attendance.overtime_approver}に申請しました。"
     redirect_to user_url(id: params[:user_id])
   end
