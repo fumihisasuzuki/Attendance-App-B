@@ -55,17 +55,18 @@ class AttendancesController < ApplicationController
   end
   
   def update_overtime
-    debugger
+#    debugger
     @user = User.find_by(id: params[:user_id])
     @attendance = Attendance.find(params[:id])
+      debugger
+    @attendance.update_attributes(attendance_params)
+    @attendance.update_attributes(overtime_status: 1)
     if params[:attendance][:next_day] == "1"
       #finish＋1日の処理
       debugger
-    else
-      @attendance.update_attributes(finished_at: @attendance.worked_on)
+      @attendance.update_attributes(finished_at: @attendance.finished_at + 1.day)
+      debugger
     end
-    @attendance.update_attributes(attendance_params)
-    @attendance.update_attributes(overtime_status: 1)
       debugger
     flash[:info] = "#{@attendance.worked_on}の残業を#{@attendance.overtime_approver}に申請しました。"
     redirect_to user_url(id: params[:user_id])
