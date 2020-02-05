@@ -22,7 +22,7 @@
             <tr>
               <td><%= l(@attendance.worked_on, format: :short) %></td>
               <td><%= $days_of_the_week[@attendance.worked_on.wday] %></td>
-              <td><%= f.time_field :finished_at, class: "form-control" %></td>
+              <td><%= f.time_field :overtime_finish_at, class: "form-control" %></td>
               <td><%= f.check_box :next_day, id: "next-day" %></td>
               <td><%= f.text_field :overtime_note, class: "form-control" %></td>
               <td><%= f.select :overtime_approver, @users_superior.map { |user| user.name }, class: "form-control" %></td>

@@ -38,14 +38,13 @@ class AttendancesController < ApplicationController
         attendance = Attendance.find(id)
         if item[:"started_at"]
           item[:"started_at"] = attendance.worked_on.to_s + " " + item[:"started_at"] + ":00"
-  #        debugger
+#debugger
           finish_day = attendance.worked_on
           finish_day += 1.day if params[:next_day][id] == "1"
           item[:"finished_at"] = finish_day.to_s + " " + item[:"finished_at"] + ":00"
-  #        attendance.update_attributes(finished_at: attendance.finished_at + 1.day) if params[:next_day][id] == "1"
-  #        debugger
+#debugger
           attendance.update_attributes!(item)
-  #        debugger
+#debugger
         end
       end
     end
@@ -62,6 +61,7 @@ class AttendancesController < ApplicationController
     @user = User.find_by(id: params[:user_id])
     @users_superior = User.where(superior: true).where.not(id: params[:user_id])
     @attendance = Attendance.find_by(user_id: params[:user_id], id: params[:id])
+    @attendance.update_attributes(overtime_finish_at: @attendance.finished_at) if @attendance.finished_at
   end
   
   def update_overtime
@@ -70,7 +70,7 @@ class AttendancesController < ApplicationController
     @attendance = Attendance.find(params[:id])
     @attendance.update_attributes(attendance_params)
     @attendance.update_attributes(overtime_status: 1)
-    @attendance.update_attributes(finished_at: @attendance.finished_at + 1.day) if params[:attendance][:next_day] == "1"
+    @attendance.update_attributes(overtime_finish_at: @attendance.overtime_finish_at + 1.day) if params[:attendance][:next_day] == "1"
     flash[:info] = "#{@attendance.worked_on}の残業を#{@attendance.overtime_approver}に申請しました。"
     redirect_to user_url(id: params[:user_id])
   end
@@ -100,9 +100,10 @@ class AttendancesController < ApplicationController
     
     # 残業時間の勤怠情報を扱います。
     def approve_overtime_params
-      params.require(:attendance).permit(attendances_need_approvals: [:overtime_status,
-                                                                     :overtime_approver,
-                                                                     :overtime_note])[:attendances_need_approvals]
+      params.require(:attendance).permit(attendances_need_approvals: [:overtime_finish_at,
+                                                                      :overtime_status,
+                                                                      :overtime_approver,
+                                                                      :overtime_note])[:attendances_need_approvals]
     end
     
     # その日の勤怠情報を扱います。

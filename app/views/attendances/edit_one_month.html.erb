@@ -39,12 +39,8 @@
                 <td><%= attendance.time_field :started_at, class: "form-control" %></td>
                 <td><%= attendance.time_field :finished_at, class: "form-control" %></td>
                 <% #debugger %>
-                <% if day.started_at %>
-                  <% unless day.started_at.day == day.finished_at.day %>
-                    <td><%= f.check_box :next_day, day.id, id: "next-day" %></td>
-                  <% else %>
-                    <td><%= check_box :next_day, day.id, id: "next-day" %></td>
-                  <% end %>
+                <% if overtime_next_day(day.started_at, day.finished_at) %>
+                  <td><%= check_box :next_day, day.id, id: "next-day" %></td>
                 <% else %>
                   <td><%= check_box :next_day, day.id, id: "next-day" %></td>
                 <% end %>

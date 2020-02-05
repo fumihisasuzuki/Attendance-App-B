@@ -27,5 +27,18 @@ module AttendancesHelper
     format("%.2f",Tod::Shift.new(Tod::TimeOfDay(designatedtime.floor_to(time_unit.minutes)), Tod::TimeOfDay(overtime.floor_to(time_unit.minutes))).duration/3600.00)
 #    debugger
   end
+  
+  # 出勤時間と退勤時間を受け取り、日をまたいでいるかどうか評価
+  def overtime_next_day(start_day, finish_day)
+    if start_day && finish_day
+      if start_day.day == finish_day.day
+        false
+      else
+        true
+      end
+    else
+      false
+    end
+  end
  
 end
