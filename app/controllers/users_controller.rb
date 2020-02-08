@@ -35,6 +35,7 @@ class UsersController < ApplicationController
         send_data render_to_string, filename: "attendances.csv", type: :csv
       end
     end
+#    debugger
   end
   
   def edit

@@ -112,8 +112,8 @@
             <% end %>
           </td>
           <td><%= day.note %></td>
-          
-          <% if day.overtime_status == "non_overtime" || day.overtime_finish_at.blank? %>
+          <% #debugger %>
+          <% if day.overtime_status == "non_overtime" || day.overtime_finish_at.blank? || day.regular_end_time.blank? %>
             <td></td>
             <td></td>
             <td></td>
@@ -121,7 +121,7 @@
           <% else %>
             <td><%= l(day.overtime_finish_at, format: :hour) %></td>
             <td><%= l(day.overtime_finish_at.floor_to(time_unit.minutes), format: :minute) %></td>
-            <td><%= working_overtimes(@user.designated_work_end_time, day.overtime_finish_at) %></td>
+            <td><%= working_overtimes(day.regular_end_time, day.overtime_finish_at) %></td>
             <td><%= day.overtime_note %></td>
           <% end %>
           <td><%= day.overtime_approver %><p></p><%= day.overtime_status %></td>

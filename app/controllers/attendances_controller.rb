@@ -51,6 +51,7 @@ class AttendancesController < ApplicationController
     flash[:success] = "1ヶ月分の勤怠情報を更新しました。"
     redirect_to user_url(date: params[:date])
   rescue ActiveRecord::RecordInvalid # トランザクションによるエラーの分岐です。
+#debugger
     flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
 #    errors.presence || nil
 #    flash[:danger] = @attendance.errors.presence.to_s || nil
@@ -61,17 +62,49 @@ class AttendancesController < ApplicationController
     @user = User.find_by(id: params[:user_id])
     @users_superior = User.where(superior: true).where.not(id: params[:user_id])
     @attendance = Attendance.find_by(user_id: params[:user_id], id: params[:id])
-    @attendance.update_attributes(overtime_finish_at: @attendance.finished_at) if @attendance.finished_at
+    date = @attendance.worked_on
+    time = @user.designated_work_end_time
+    @attendance.regular_end_time = DateTime.new(date.year, date.month, date.day, time.hour, time.min, time.sec, 0.375); p @attendance.regular_end_time
+    @attendance.save
+#    debugger
   end
   
   def update_overtime
 #    debugger
     @user = User.find_by(id: params[:user_id])
     @attendance = Attendance.find(params[:id])
-    @attendance.update_attributes(attendance_params)
-    @attendance.update_attributes(overtime_status: 1)
-    @attendance.update_attributes(overtime_finish_at: @attendance.overtime_finish_at + 1.day) if params[:attendance][:next_day] == "1"
-    flash[:info] = "#{@attendance.worked_on}の残業を#{@attendance.overtime_approver}に申請しました。"
+#    debugger
+    if params[:attendance][:overtime_finish_at] == ""
+      flash[:danger] = "申請エラー。残業時間は必須項目です。"
+    else
+      finish_day = @attendance.worked_on
+      finish_day += 1.day if params[:attendance][:next_day] == "1"
+      params[:attendance][:overtime_finish_at] = finish_day.to_s + " " + params[:attendance][:overtime_finish_at] + ":00"
+      if params[:attendance][:overtime_note] == ""
+        flash[:danger] = "申請エラー。業務処理内容は必須項目です。"
+      else
+        params[:attendance][:overtime_status] = "applying_overtime"
+        if @attendance.update_attributes(attendance_params)
+          flash[:info] = "#{@attendance.worked_on}の残業を#{@attendance.overtime_approver}に申請しました。"
+        else
+          flash[:danger] = "申請エラー。残業時間は、出勤時間より後にしてください。日をまたぐ場合は、翌日にチェックを入れて下さい。"
+        end
+      end
+    end
+
+#    debugger
+#    unless @attendance.update_attributes(overtime_status: 1)
+#      flash[:danger] = "上呈に失敗しました。システムにお問い合わせ下さい。" + @attendance.errors.full_messages.join("<br>")
+#      redirect_to user_url(date: params[:date]) and return
+#    end
+#    debugger
+#    if params[:attendance][:next_day] == "1"
+#      unless @attendance.update_attributes(overtime_finish_at: @attendance.overtime_finish_at + 1.day)
+#        flash[:danger] = "翌日処理に失敗しました。システムにお問い合わせ下さい。" + @attendance.errors.full_messages.join("<br>")
+#        redirect_to edit_overtime_user_attendance_url(@user, @attendance) and return
+#      end
+#    end
+#    debugger
     redirect_to user_url(id: params[:user_id])
   end
   

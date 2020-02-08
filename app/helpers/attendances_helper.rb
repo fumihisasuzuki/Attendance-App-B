@@ -20,11 +20,18 @@ module AttendancesHelper
   end
   
   # 定時と残業予定時間を受け取り、時間外時間を計算して返す
-  def working_overtimes(designatedtime, overtime)
+  def working_overtimes(regulartime_value, overtime_value)
 #    format("%.2f", (((overtime.floor_to(time_unit.minutes) - designatedtime.floor_to(time_unit.minutes)) / 60 ) / 60.0))
 #    debugger
 #    format("%.2f", (((Tod::TimeOfDay(overtime.floor_to(time_unit.minutes)) - Tod::TimeOfDay(designatedtime.floor_to(time_unit.minutes))) / 60 ) / 60.0))
-    format("%.2f",Tod::Shift.new(Tod::TimeOfDay(designatedtime.floor_to(time_unit.minutes)), Tod::TimeOfDay(overtime.floor_to(time_unit.minutes))).duration/3600.00)
+    regulartime = Tod::TimeOfDay(regulartime_value.floor_to(time_unit.minutes))
+    overtime = Tod::TimeOfDay(overtime_value.floor_to(time_unit.minutes))
+    differnce_hours = Tod::Shift.new(regulartime, overtime).duration/3600.00
+    if regulartime_value > overtime_value
+      format("%.2f",differnce_hours - 24)
+    else
+      format("%.2f",differnce_hours)
+    end
 #    debugger
   end
   
