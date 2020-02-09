@@ -66,21 +66,57 @@ class ApplicationController < ActionController::Base
     redirect_to root_url
   end
   
+  # @userに1ヵ月分の承認申請を上呈しているユーザーの一覧
+  def set_users_need_one_month_approvals
+    @users_need_one_month_approvals = []
+    users = User.all
+    users.each do |user|
+      # 名前で検索！？同性同名の人がいるかもしれないし、idの方が良いね。要修正。
+      if user.attendances.find_by(approver_one_month: @user.name, status_one_month: 1)
+        @users_need_one_month_approvals << user
+      end
+    end
+  end
+  
+  # @userに勤怠変更申請を上呈しているユーザーの一覧
+  def set_users_need_change_approvals
+    @users_need_change_approvals = []
+    users = User.all
+    users.each do |user|
+      # 名前で検索！？同性同名の人がいるかもしれないし、idの方が良いね。要修正。
+      if user.attendances.find_by(approver: @user.name, status: 1)
+        @users_need_change_approvals << user
+      end
+    end
+  end
+  
   # @userに残業申請を上呈しているユーザーの一覧
-  def set_users_need_approvals
-    @users_need_approvals = []
+  def set_users_need_overtime_approvals
+    @users_need_overtime_approvals = []
     users = User.all
     users.each do |user|
       # 名前で検索！？同性同名の人がいるかもしれないし、idの方が良いね。要修正。
       if user.attendances.find_by(overtime_approver: @user.name, overtime_status: 1)
-        @users_need_approvals << user
+        @users_need_overtime_approvals << user
       end
     end
   end
     
+  # @userに1ヵ月分の承認申請を上呈している勤怠情報一覧
+  def set_attendances_need_one_month_approvals
+    @attendances_need_one_month_approvals = Attendance.includes(:user).references(:user).where(approver_one_month: @user.name).where(status_one_month: 1)
+    #debugger
+  end
+  
+  # @userに勤怠変更申請を上呈している勤怠情報一覧
+  def set_attendances_need_change_approvals
+    @attendances_need_change_approvals = Attendance.includes(:user).references(:user).where(approver: @user.name).where(status: 1)
+    #debugger
+  end
+  
   # @userに残業申請を上呈している勤怠情報一覧
-  def set_attendances_need_approvals
-    @attendances_need_approvals = Attendance.includes(:user).references(:user).where(overtime_approver: @user.name).where(overtime_status: 1)
+  def set_attendances_need_overtime_approvals
+    @attendances_need_overtime_approvals = Attendance.includes(:user).references(:user).where(overtime_approver: @user.name).where(overtime_status: 1)
     #debugger
   end
   

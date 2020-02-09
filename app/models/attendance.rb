@@ -15,7 +15,7 @@ class Attendance < ApplicationRecord
   # 過去の日付を編集する時、出勤時間が存在しない場合、残業時間は無効
 #  validate :overtime_finish_at_is_invalid_without_a_started_at
   # 出勤・残業時間どちらも存在する時、出勤時間より早い残業時間は無効
-#  validate :started_at_than_overtime_finish_at_fast_if_invalid
+  validate :started_at_than_overtime_finish_at_fast_if_invalid
 
   # 出勤時間が存在しない場合、退勤時間は無効
   def finished_at_is_invalid_without_a_started_at

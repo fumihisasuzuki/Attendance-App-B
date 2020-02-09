@@ -35,6 +35,9 @@
                 <td style="color: #CCC;"><%= attendance.time_select :started_at, disabled: true, class: "form-control", include_blank: true %></td>
                 <td style="color: #CCC;"><%= attendance.time_select :finished_at, disabled: true, class: "form-control", include_blank: true %></td>
                 <td><%= f.check_box :next_day, disabled: true, id: "next-day" %></td>
+                <td></td>
+                <td><%= attendance.text_field :note, disabled: true, class: "form-control" %></td>
+                <td><%= attendance.select :approver, @users_superior.map { |user| user.name }, include_blank: true, disabled: true, class: "form-control" %></td>
               <% else %>
                 <td><%= attendance.time_field :started_at, class: "form-control" %></td>
                 <td><%= attendance.time_field :finished_at, class: "form-control" %></td>
@@ -44,14 +47,14 @@
                 <% else %>
                   <td><%= check_box :next_day, day.id, id: "next-day" %></td>
                 <% end %>
+                <td>
+                  <% if day.started_at.present? && day.finished_at.present? %>
+                    <%= working_times(day.started_at, day.finished_at) %>
+                  <% end %>
+                </td>
+                <td><%= attendance.text_field :note, class: "form-control" %></td>
+                <td><%= attendance.select :approver, @users_superior.map { |user| user.name }, include_blank: true, class: "form-control" %></td>
               <% end %>
-              <td>
-                <% if day.started_at.present? && day.finished_at.present? %>
-                  <%= working_times(day.started_at, day.finished_at) %>
-                <% end %>
-              </td>
-              <td><%= attendance.text_field :note, class: "form-control" %></td>
-              <td></td>
             </tr>
           <% end %>
         <% end %>
