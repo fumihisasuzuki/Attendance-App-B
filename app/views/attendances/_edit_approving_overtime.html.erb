@@ -28,9 +28,10 @@
                     <tr>
                       <td><%= l(day.worked_on, format: :short) %></td>
                       <td><%= $days_of_the_week[day.worked_on.wday] %></td>
-                      <td><%= l(day.finished_at.floor_to(time_unit.minutes), format: :time) %></td>
-                      <td><%= l(user.designated_work_end_time.floor_to(time_unit.minutes), format: :time) %></td>
-                      <td><%= working_overtimes(user.designated_work_end_time, day.finished_at) %></td>
+                      <% #debugger %>
+                      <td><%= l(day.overtime_finish_at.floor_to(time_unit.minutes), format: :time) %></td>
+                      <td><%= l(day.regular_end_time.floor_to(time_unit.minutes), format: :time) %></td>
+                      <td><%= working_overtimes(day.regular_end_time, day.overtime_finish_at) %></td>
                       <td><%= day.overtime_note %></td>
                       <td><%= attendance.select :overtime_status, Attendance.overtime_statuses.keys.map { |k| [I18n.t("enums.attendance.overtime_status.#{k}"), k]} %></td>
                       <td><%= check_box :approve_overtime, day.id, id: "approve-overtime" %></td>
