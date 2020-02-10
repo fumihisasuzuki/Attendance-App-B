@@ -1,12 +1,12 @@
 class AttendancesController < ApplicationController
-  before_action :set_user, only: [:edit_applying_change, :update_applying_change, :edit_approving_overtime, :update_approving_overtime, :edit_approving_change, :update_approving_change]
+  before_action :set_user, only: [:edit_approving_one_month, :update_approving_one_month, :edit_applying_change, :update_applying_change, :edit_approving_overtime, :update_approving_overtime, :edit_approving_change, :update_approving_change]
   before_action :logged_in_user, only: [:update, :edit_applying_change]
   before_action :set_one_month, only: [:edit_applying_change, :update_applying_change]
   before_action :admin_or_correct_user, only: [:update, :edit_applying_change, :update_applying_change]
-#  before_action :set_users_need_one_month_approvals, only: []
+  before_action :set_users_need_one_month_approvals, only: [:edit_approving_one_month, :update_approving_one_month]
   before_action :set_users_need_change_approvals, only: [:edit_approving_change, :update_approving_change]
   before_action :set_users_need_overtime_approvals, only: [:edit_approving_overtime, :update_approving_overtime]
-#  before_action :set_attendances_need_one_month_approvals, only: [:edit_approving_overtime, :update_approving_overtime]
+  before_action :set_attendances_need_one_month_approvals, only: [:edit_approving_one_month, :update_approving_one_month]
   before_action :set_attendances_need_change_approvals, only: [:edit_approving_change, :update_approving_change]
   before_action :set_attendances_need_overtime_approvals, only: [:edit_approving_overtime, :update_approving_overtime]
 
@@ -38,11 +38,9 @@ class AttendancesController < ApplicationController
 #    debugger
     @user = User.find_by(id: params[:user_id])
     @attendance = Attendance.find(params[:id])
-#    debugger
-    
     if @attendance.update_attributes(approver_one_month: params[:approver_one_month])
       @attendance.update_attributes(status_one_month: "applying_one_month")
-      flash[:info] = "#{@attendance.worked_on.month}月分の承認依頼を#{@attendance.overtime_approver}に申請しました。"
+      flash[:info] = "#{@attendance.worked_on.month}月分の承認依頼を#{@attendance.approver_one_month}に申請しました。"
     else
       flash[:danger] = "申請エラー。#{@attendance.worked_on.month}月分の承認依頼に失敗しました。承認先を正しく選んでください。"
     end

@@ -35,7 +35,7 @@
       <% if @attendances_need_one_month_approvals.count == 0 %>
         (1か月分承認申請のお知らせはありません)
       <% else %>
-        <%= link_to "【1か月分承認申請のお知らせ】：#{@attendances_need_one_month_approvals.count}件の通知があります！", "#", remote: true, class: "" %>
+        <%= link_to "【1か月分承認申請のお知らせ】：#{@attendances_need_one_month_approvals.count}件の通知があります！", attendances_edit_approving_one_month_user_path(@user), remote: true, class: "" %>
       <% end %>
     </div>
     <div>
@@ -99,8 +99,10 @@
     <tbody>
       <% @attendances.each do |day| %>
         <% css_class_of_the_day = case $days_of_the_week[day.worked_on.wday]
-                                    when '土' 'text-primary'
-                                    when '日' 'text-danger'
+                                    when '土'
+                                      'text-primary'
+                                    when '日'
+                                      'text-danger'
                                   end
         %>
         <tr>
@@ -160,6 +162,17 @@
         <td colspan="1">
           <% if current_user?(@user) %>
             所属長承認
+            <%= case @attendances.first.status_one_month
+                  when "non_one_month"
+                    '未'
+                  when "applying_one_month"
+                    "#{@attendances.first.approver_one_month}へ申請中"
+                  when "approved_one_month"
+                    "#{@attendances.first.approver_one_month}から承認済"
+                  when "not_approved_one_month"
+                    "#{@attendances.first.approver_one_month}により否認"
+                end
+            %>
             <%= form_with(model: @attendance, url: update_one_month_user_attendance_path(@user, @attendances.first), local: true, method: :patch) do |f| %>
               <%= f.select :approver_one_month, @users_superior.map { |user| user.name }, include_blank: true, class: "form-control" %>
               <%= f.submit "申請", class: "btn btn-primary btn-block" %>
@@ -173,6 +186,7 @@
 </div>
 
 <!--モーダルウインドウ表示-->
-<div id="edit-overtime" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="edit-approving-one-month" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id="edit-approving-change" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id="edit-approving-overtime" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="edit-overtime" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
