@@ -44,14 +44,14 @@
                       <td><%= l(day.worked_on, format: :short) %></td>
                       <td><%= $days_of_the_week[day.worked_on.wday] %></td>
                       <% #debugger %>
-                      <td>時</td>
-                      <td>分</td>
-                      <td>時</td>
-                      <td>分</td>
                       <td><%= l(day.started_at, format: :hour) if day.started_at.present? %></td>
                       <td><%= l(day.started_at.floor_to(time_unit.minutes), format: :minute) if day.started_at.present? %></td>
                       <td><%= l(day.finished_at, format: :hour) if day.finished_at.present? %></td>
                       <td><%= l(day.finished_at.floor_to(time_unit.minutes), format: :minute) if day.finished_at.present? %></td>
+                      <td><%= l(day.started_at_applying, format: :hour) if day.started_at_applying.present? %></td>
+                      <td><%= l(day.started_at_applying.floor_to(time_unit.minutes), format: :minute) if day.started_at_applying.present? %></td>
+                      <td><%= l(day.finished_at_applying, format: :hour) if day.finished_at_applying.present? %></td>
+                      <td><%= l(day.finished_at_applying.floor_to(time_unit.minutes), format: :minute) if day.finished_at_applying.present? %></td>
                       <td><%= day.overtime_note %></td>
                       <td><%= attendance.select :status, Attendance.statuses.keys.map { |k| [I18n.t("enums.attendance.status.#{k}"), k]} %></td>
                       <td><%= check_box :approve_change, day.id, id: "approve-change" %></td>

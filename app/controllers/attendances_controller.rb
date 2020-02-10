@@ -1,5 +1,5 @@
 class AttendancesController < ApplicationController
-  before_action :set_user, only: [:edit_one_month, :edit_approving_overtime, :update_approving_overtime, :edit_approving_change, :update_approving_change]
+  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_approving_overtime, :update_approving_overtime, :edit_approving_change, :update_approving_change]
   before_action :logged_in_user, only: [:update, :edit_one_month]
   before_action :set_one_month, only: [:edit_one_month, :update_one_month]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
@@ -15,14 +15,15 @@ class AttendancesController < ApplicationController
   def update
     @user = User.find(params[:user_id])
     @attendance = Attendance.find(params[:id])
+    time = Time.current.change(sec: 0)
     if @attendance.started_at.nil? # 出勤時間が未登録であることを判定します。
-      if @attendance.update_attributes(started_at: Time.current.change(sec: 0)) && @attendance.update_attributes(started_at_original: Time.current.change(sec: 0))
+      if @attendance.update_attributes(started_at: time, started_at_original: time, started_at_applying: time)
         flash[:info] = "おはようございます！"
       else
         flash[:danger] = UPDATE_ERROR_MSG
       end
     elsif @attendance.finished_at.nil?
-      if @attendance.update_attributes(finished_at: Time.current.change(sec: 0)) && @attendance.update_attributes(finished_at_original: Time.current.change(sec: 0))
+      if @attendance.update_attributes(finished_at: time, finished_at_original: time, finished_at_applying: time)
         flash[:info] = "お疲れ様でした。"
       else
         flash[:danger] = UPDATE_ERROR_MSG
@@ -42,16 +43,34 @@ class AttendancesController < ApplicationController
     #debugger
     ActiveRecord::Base.transaction do # トランザクションを開始します。
       attendances_params.each do |id, item|
-        unless item[:"approver"] == ""
+        unless item[:"approver"] == "" # 上司を選ばないと申請できない。
           attendance = Attendance.find(id)
+#          debugger
+          # started_atに入力があった場合に、started_atを整え、初めての入力であればoriginalにその値を代入する。
           if item[:"started_at"]
             item[:"started_at"] = attendance.worked_on.to_s + " " + item[:"started_at"] + ":00"
+            item[:"started_at_original"] = item[:"started_at"] unless attendance.started_at_original
+          end
+          # finished_atに入力があった場合に、finished_atを整え、初めての入力であればoriginalにその値を代入する。
+          if item[:"finished_at"]
             finish_day = attendance.worked_on
             finish_day += 1.day if params[:next_day][id] == "1"
             item[:"finished_at"] = finish_day.to_s + " " + item[:"finished_at"] + ":00"
+            item[:"finished_at_original"] = item[:"finished_at"] unless attendance.finished_at_original
           end
-          item[:"status"] = "applying"
-          attendance.update_attributes!(item)
+          # 値に変化がなければ申請しない。
+          unless item[:"started_at"] == attendance.started_at && item[:"finished_at"] == attendance.finished_at
+            # applyingに申請値を代入
+            item[:"started_at_applying"] = item[:"started_at"]
+            item[:"finished_at_applying"] = item[:"finished_at"]
+            # 現状（申請前）の値を保存
+            item[:"started_at"] = attendance.started_at
+            item[:"finished_at"] = attendance.finished_at
+            # 更新及び申請
+            item[:"status"] = "applying"
+#          debugger
+            attendance.update_attributes!(item)
+          end
         end
       end
     end
@@ -72,6 +91,14 @@ class AttendancesController < ApplicationController
     approve_change_params.each do |id, item|
       if params[:approve_change][:"#{id}"] == "1"
         attendance = Attendance.find(id)
+        if item[:"status"] == "approved"
+#          debugger
+          # applyingの申請値を実際の勤怠情報に反映
+          item[:"started_at"] = attendance.started_at_applying
+          item[:"finished_at"] = attendance.finished_at_applying
+          item[:"approved_on"] = Time.current.change(sec: 0)
+#          debugger
+        end
         attendance.update_attributes(item)
       end
     end
@@ -137,7 +164,15 @@ class AttendancesController < ApplicationController
   private
     # Userに紐づいた複数の勤怠情報を扱います。
     def attendances_params
-      params.require(:user).permit(attendances: [:started_at, :finished_at, :note, :status, :approver])[:attendances]
+      params.require(:user).permit(attendances: [:started_at,
+                                                :finished_at,
+                                                :note,
+                                                :status,
+                                                :approver,
+                                                :started_at_original,
+                                                :finished_at_original,
+                                                :started_at_applying,
+                                                :finished_at_applying])[:attendances]
     end
     
     # その日の勤怠情報を扱います。
@@ -162,7 +197,9 @@ class AttendancesController < ApplicationController
     
     # 勤怠変更上呈承認情報を扱います。
     def approve_change_params
-      params.require(:attendance).permit(attendances_need_change_approvals: [:status, :approver])[:attendances_need_change_approvals]
+      params.require(:attendance).permit(attendances_need_change_approvals: [:status,
+                                                                            :started_at,
+                                                                            :finished_at])[:attendances_need_change_approvals]
     end
     
     # 残業時間の勤怠情報を扱います。
