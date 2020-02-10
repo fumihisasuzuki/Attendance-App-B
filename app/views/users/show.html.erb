@@ -160,10 +160,10 @@
         <td colspan="1">
           <% if current_user?(@user) %>
             所属長承認
-            <%= form_with(model: @user, url: attendances_update_applying_change_user_path(date: @first_day), local: true, method: :patch) do |f| %>
+            <%= form_with(model: @attendance, url: update_one_month_user_attendance_path(@user, @attendances.first), local: true, method: :patch) do |f| %>
               <%= f.select :approver_one_month, @users_superior.map { |user| user.name }, include_blank: true, class: "form-control" %>
+              <%= f.submit "申請", class: "btn btn-primary btn-block" %>
             <% end %>
-            <%= link_to "申請", attendances_edit_applying_change_user_path(date: @first_day), class: "btn btn-primary" %>
           <% end %>
         </td>
       </tr>

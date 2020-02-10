@@ -33,9 +33,31 @@ class AttendancesController < ApplicationController
   end
   
   
-  # 勤怠変更申請処理
-#  def update_one_month
-#  end
+  # 勤怠1か月分承認申請処理
+  def update_one_month
+#    debugger
+    @user = User.find_by(id: params[:user_id])
+    @attendance = Attendance.find(params[:id])
+#    debugger
+    
+    if @attendance.update_attributes(approver_one_month: params[:approver_one_month])
+      @attendance.update_attributes(status_one_month: "applying_one_month")
+      flash[:info] = "#{@attendance.worked_on.month}月分の承認依頼を#{@attendance.overtime_approver}に申請しました。"
+    else
+      flash[:danger] = "申請エラー。#{@attendance.worked_on.month}月分の承認依頼に失敗しました。承認先を正しく選んでください。"
+    end
+#    debugger
+    redirect_to user_url(id: params[:user_id])
+  end
+  
+  # 勤怠1か月分承認承認ページ
+  def edit_approving_one_month
+  end
+  
+  # 勤怠1か月分承認処理
+  def update_approving_one_month
+  end
+  
   
   # 勤怠変更申請ページ
   def edit_applying_change

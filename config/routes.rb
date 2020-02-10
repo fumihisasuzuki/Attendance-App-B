@@ -14,6 +14,8 @@ Rails.application.routes.draw do
     member do
       get 'edit_basic_info'
       patch 'update_basic_info'
+      get 'attendances/edit_approving_one_month' #新規追加
+      patch 'attendances/update_approving_one_month' #新規追加
       get 'attendances/edit_applying_change'
       patch 'attendances/update_applying_change'
       get 'attendances/edit_approving_change'
@@ -25,6 +27,7 @@ Rails.application.routes.draw do
       member do
         get 'edit_overtime'
         patch 'update_overtime'
+        patch 'update_one_month' #新規追加
       end
     end
     collection { post :import }
