@@ -30,27 +30,29 @@
 </div>
 
 <% if current_user?(@user) %>
-  <div>
-    <% if @attendances_need_one_month_approvals.count == 0 %>
-      (1か月分承認申請のお知らせはありません)
-    <% else %>
-      <%= link_to "【1か月分承認申請のお知らせ】：#{@attendances_need_one_month_approvals.count}件の通知があります！", "#", remote: true, class: "" %>
-    <% end %>
-  </div>
-  <div>
-    <% if @attendances_need_change_approvals.count == 0 %>
-      (勤怠変更申請のお知らせはありません)
-    <% else %>
-      <%= link_to "【勤怠変更申請のお知らせ】：#{@attendances_need_change_approvals.count}件の通知があります！", attendances_edit_approving_change_user_path(@user), remote: true, class: "" %>
-    <% end %>
-  </div>
-  <div>
-    <% if @attendances_need_overtime_approvals.count == 0 %>
-      (残業申請のお知らせはありません)
-    <% else %>
-      <%= link_to "【残業申請のお知らせ】：#{@attendances_need_overtime_approvals.count}件の通知があります！", attendances_edit_approving_overtime_user_path(@user), remote: true, class: "" %>
-    <% end %>
-  </div>
+  <% if current_user.superior? %>
+    <div>
+      <% if @attendances_need_one_month_approvals.count == 0 %>
+        (1か月分承認申請のお知らせはありません)
+      <% else %>
+        <%= link_to "【1か月分承認申請のお知らせ】：#{@attendances_need_one_month_approvals.count}件の通知があります！", "#", remote: true, class: "" %>
+      <% end %>
+    </div>
+    <div>
+      <% if @attendances_need_change_approvals.count == 0 %>
+        (勤怠変更申請のお知らせはありません)
+      <% else %>
+        <%= link_to "【勤怠変更申請のお知らせ】：#{@attendances_need_change_approvals.count}件の通知があります！", attendances_edit_approving_change_user_path(@user), remote: true, class: "" %>
+      <% end %>
+    </div>
+    <div>
+      <% if @attendances_need_overtime_approvals.count == 0 %>
+        (残業申請のお知らせはありません)
+      <% else %>
+        <%= link_to "【残業申請のお知らせ】：#{@attendances_need_overtime_approvals.count}件の通知があります！", attendances_edit_approving_overtime_user_path(@user), remote: true, class: "" %>
+      <% end %>
+    </div>
+  <% end %>
   <div style="display:inline-flex">
     <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
     <%= link_to "CSV出力", user_path(format: :csv), class: "btn btn-primary" %>

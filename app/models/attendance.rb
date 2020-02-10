@@ -7,32 +7,60 @@ class Attendance < ApplicationRecord
   enum overtime_status:[:non_overtime, :applying_overtime, :approved_overtime, :not_approved_overtime] # 残業申請のステータス
   
   # 出勤時間が存在しない場合、退勤時間は無効
-  validate :finished_at_is_invalid_without_a_started_at
+#  validate :finished_at_is_invalid_without_a_started_at
   # 過去の日付を編集する時、退勤時間が存在しない場合の出勤時間は無効
-  validate :started_at_is_invalid_without_a_finished_at_at_past
+#  validate :started_at_is_invalid_without_a_finished_at_at_past
   # 出勤・退勤時間どちらも存在する時、出勤時間より早い退勤時間は無効
-  validate :started_at_than_finished_at_fast_if_invalid
+#  validate :started_at_than_finished_at_fast_if_invalid
+
+  # 出勤時間が存在しない場合、退勤時間は無効
+  validate :finished_at_applying_is_invalid_without_a_started_at_applying
+  # 過去の日付を編集する時、退勤時間が存在しない場合の出勤時間は無効
+  validate :started_at_applying_is_invalid_without_a_finished_at_applying_at_past
+  # 出勤・退勤時間どちらも存在する時、出勤時間より早い退勤時間は無効
+  validate :started_at_applying_than_finished_at_applying_fast_if_invalid
+
   # 過去の日付を編集する時、出勤時間が存在しない場合、残業時間は無効
 #  validate :overtime_finish_at_is_invalid_without_a_started_at
   # 出勤・残業時間どちらも存在する時、出勤時間より早い残業時間は無効
   validate :started_at_than_overtime_finish_at_fast_if_invalid
 
+
   # 出勤時間が存在しない場合、退勤時間は無効
-  def finished_at_is_invalid_without_a_started_at
-    errors.add(:started_at, "が必要です") if started_at.blank? && finished_at.present?
+#  def finished_at_is_invalid_without_a_started_at
+#    errors.add(:started_at, "が必要です") if started_at.blank? && finished_at.present?
+#  end
+  
+  # 過去の日付を編集する時、退勤時間が存在しない場合の出勤時間は無効
+#  def started_at_is_invalid_without_a_finished_at_at_past
+#    if self.worked_on < Date.current
+#      errors.add(:finished_at, "が必要です") if started_at.present? && finished_at.blank?
+#    end
+#  end
+  
+  # 出勤・退勤時間どちらも存在する時、出勤時間より早い退勤時間は無効
+#  def started_at_than_finished_at_fast_if_invalid
+#    if started_at.present? && finished_at.present?
+#      errors.add(:started_at, "より早い退勤時間は無効です") if started_at > finished_at
+#    end
+#  end
+
+  # 出勤時間が存在しない場合、退勤時間は無効
+  def finished_at_applying_is_invalid_without_a_started_at_applying
+    errors.add(:started_at_applying, "が必要です") if started_at_applying.blank? && finished_at_applying.present?
   end
   
   # 過去の日付を編集する時、退勤時間が存在しない場合の出勤時間は無効
-  def started_at_is_invalid_without_a_finished_at_at_past
+  def started_at_applying_is_invalid_without_a_finished_at_applying_at_past
     if self.worked_on < Date.current
-      errors.add(:finished_at, "が必要です") if started_at.present? && finished_at.blank?
+      errors.add(:finished_at_applying, "が必要です") if started_at_applying.present? && finished_at_applying.blank?
     end
   end
   
   # 出勤・退勤時間どちらも存在する時、出勤時間より早い退勤時間は無効
-  def started_at_than_finished_at_fast_if_invalid
-    if started_at.present? && finished_at.present?
-      errors.add(:started_at, "より早い退勤時間は無効です") if started_at > finished_at
+  def started_at_applying_than_finished_at_applying_fast_if_invalid
+    if started_at_applying.present? && finished_at_applying.present?
+      errors.add(:started_at_applying, "より早い退勤時間は無効です") if started_at_applying > finished_at_applying
     end
   end
   

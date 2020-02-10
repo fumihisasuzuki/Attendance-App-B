@@ -20,6 +20,10 @@ ja:
         worked_on: 日付
         started_at: 出勤時間
         finished_at: 退勤時間
+        started_at_original: 出勤時間（初期入力値）
+        finished_at_original: 退勤時間（初期入力値）
+        started_at_applying: 申請出勤時間
+        finished_at_applying: 申請退勤時間
         note: 備考
         user: ユーザーID
       base:

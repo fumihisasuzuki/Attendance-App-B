@@ -45,7 +45,7 @@ class AttendancesController < ApplicationController
       attendances_params.each do |id, item|
         unless item[:"approver"] == "" # 上司を選ばないと申請できない。
           attendance = Attendance.find(id)
-#          debugger
+#debugger
           # started_atに入力があった場合に、started_atを整え、初めての入力であればoriginalにその値を代入する。
           if item[:"started_at"]
             item[:"started_at"] = attendance.worked_on.to_s + " " + item[:"started_at"] + ":00"
@@ -58,19 +58,16 @@ class AttendancesController < ApplicationController
             item[:"finished_at"] = finish_day.to_s + " " + item[:"finished_at"] + ":00"
             item[:"finished_at_original"] = item[:"finished_at"] unless attendance.finished_at_original
           end
-          # 値に変化がなければ申請しない。
-          unless item[:"started_at"] == attendance.started_at && item[:"finished_at"] == attendance.finished_at
-            # applyingに申請値を代入
-            item[:"started_at_applying"] = item[:"started_at"]
-            item[:"finished_at_applying"] = item[:"finished_at"]
-            # 現状（申請前）の値を保存
-            item[:"started_at"] = attendance.started_at
-            item[:"finished_at"] = attendance.finished_at
-            # 更新及び申請
-            item[:"status"] = "applying"
-#          debugger
-            attendance.update_attributes!(item)
-          end
+          # applyingに申請値を代入
+          item[:"started_at_applying"] = item[:"started_at"]
+          item[:"finished_at_applying"] = item[:"finished_at"]
+          # 現状（申請前）の値を保存
+          item[:"started_at"] = attendance.started_at
+          item[:"finished_at"] = attendance.finished_at
+          # 更新及び申請
+          item[:"status"] = "applying"
+#debugger
+          attendance.update_attributes!(item)
         end
       end
     end
@@ -92,12 +89,10 @@ class AttendancesController < ApplicationController
       if params[:approve_change][:"#{id}"] == "1"
         attendance = Attendance.find(id)
         if item[:"status"] == "approved"
-#          debugger
           # applyingの申請値を実際の勤怠情報に反映
           item[:"started_at"] = attendance.started_at_applying
           item[:"finished_at"] = attendance.finished_at_applying
           item[:"approved_on"] = Time.current.change(sec: 0)
-#          debugger
         end
         attendance.update_attributes(item)
       end
