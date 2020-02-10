@@ -54,7 +54,7 @@
     </div>
   <% end %>
   <div style="display:inline-flex">
-    <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
+    <%= link_to "勤怠を編集", attendances_edit_applying_change_user_path(date: @first_day), class: "btn btn-primary" %>
     <%= link_to "CSV出力", user_path(format: :csv), class: "btn btn-primary" %>
   </div>
   <div>
@@ -114,8 +114,10 @@
           <td><%= l(day.started_at, format: :hour) if day.started_at.present? %></td>
           <td><%= l(day.started_at.floor_to(time_unit.minutes), format: :minute) if day.started_at.present? %></td>
           <td>
-            <% if btn_text = attendance_state(day) %>
-              <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary" %>
+            <% if current_user?(@user) %>
+              <% if btn_text = attendance_state(day) %>
+                <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary" %>
+              <% end %>
             <% end %>
           </td>
           <td><%= l(day.finished_at, format: :hour) if day.finished_at.present? %></td>
@@ -158,6 +160,10 @@
         <td colspan="1">
           <% if current_user?(@user) %>
             所属長承認
+            <%= form_with(model: @user, url: attendances_update_applying_change_user_path(date: @first_day), local: true, method: :patch) do |f| %>
+              <%= f.select :approver_one_month, @users_superior.map { |user| user.name }, include_blank: true, class: "form-control" %>
+            <% end %>
+            <%= link_to "申請", attendances_edit_applying_change_user_path(date: @first_day), class: "btn btn-primary" %>
           <% end %>
         </td>
       </tr>

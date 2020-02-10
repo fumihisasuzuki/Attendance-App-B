@@ -1,8 +1,8 @@
 class AttendancesController < ApplicationController
-  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_approving_overtime, :update_approving_overtime, :edit_approving_change, :update_approving_change]
-  before_action :logged_in_user, only: [:update, :edit_one_month]
-  before_action :set_one_month, only: [:edit_one_month, :update_one_month]
-  before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
+  before_action :set_user, only: [:edit_applying_change, :update_applying_change, :edit_approving_overtime, :update_approving_overtime, :edit_approving_change, :update_approving_change]
+  before_action :logged_in_user, only: [:update, :edit_applying_change]
+  before_action :set_one_month, only: [:edit_applying_change, :update_applying_change]
+  before_action :admin_or_correct_user, only: [:update, :edit_applying_change, :update_applying_change]
 #  before_action :set_users_need_one_month_approvals, only: []
   before_action :set_users_need_change_approvals, only: [:edit_approving_change, :update_approving_change]
   before_action :set_users_need_overtime_approvals, only: [:edit_approving_overtime, :update_approving_overtime]
@@ -32,14 +32,19 @@ class AttendancesController < ApplicationController
     redirect_to @user
   end
   
+  
+  # 勤怠変更申請処理
+#  def update_one_month
+#  end
+  
   # 勤怠変更申請ページ
-  def edit_one_month
+  def edit_applying_change
     @attendance = Attendance.find_by(user_id: params[:id]) # viewでNoMethodエラーが出ないように入れているだけ。
-    @users_superior = User.where(superior: true).where.not(id: params[:id])
+#    @users_superior = User.where(superior: true).where.not(id: params[:id])
   end
   
   # 勤怠変更申請処理
-  def update_one_month
+  def update_applying_change
     #debugger
     ActiveRecord::Base.transaction do # トランザクションを開始します。
       attendances_params.each do |id, item|
@@ -75,7 +80,7 @@ class AttendancesController < ApplicationController
     redirect_to user_url(date: params[:date])
   rescue ActiveRecord::RecordInvalid # トランザクションによるエラーの分岐です。
     flash[:danger] = "無効な入力データがあった為、申請をキャンセルしました。"
-    redirect_to attendances_edit_one_month_user_url(date: params[:date])
+    redirect_to attendances_edit_applying_change_user_url(date: params[:date])
   end
   
   # 勤怠変更承認ページ

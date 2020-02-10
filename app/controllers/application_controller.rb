@@ -7,9 +7,10 @@ class ApplicationController < ActionController::Base
   
   # beforeフィルター
 
-  # 現在のユーザーを取得します。
+  # 現在のユーザー及び承認先上司一覧を取得します。
   def set_user
     @user = User.find(params[:id])
+    @users_superior = User.where(superior: true).where.not(id: params[:id])
   end
     
   # ログイン済みのユーザーか確認します。
