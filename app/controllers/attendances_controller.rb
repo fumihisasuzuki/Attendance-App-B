@@ -1,7 +1,7 @@
 class AttendancesController < ApplicationController
   before_action :set_user, only: [:edit_one_month, :edit_approving_overtime, :update_approving_overtime, :edit_approving_change, :update_approving_change]
   before_action :logged_in_user, only: [:update, :edit_one_month]
-  before_action :set_one_month, only: :edit_one_month
+  before_action :set_one_month, only: [:edit_one_month, :update_one_month]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
 #  before_action :set_users_need_one_month_approvals, only: []
   before_action :set_users_need_change_approvals, only: [:edit_approving_change, :update_approving_change]
@@ -15,14 +15,14 @@ class AttendancesController < ApplicationController
   def update
     @user = User.find(params[:user_id])
     @attendance = Attendance.find(params[:id])
-    if @attendance.started_at.nil?   # 出勤時間が未登録であることを判定します。
-      if @attendance.update_attributes(started_at: Time.current.change(sec: 0))
+    if @attendance.started_at.nil? # 出勤時間が未登録であることを判定します。
+      if @attendance.update_attributes(started_at: Time.current.change(sec: 0)) && @attendance.update_attributes(started_at_original: Time.current.change(sec: 0))
         flash[:info] = "おはようございます！"
       else
         flash[:danger] = UPDATE_ERROR_MSG
       end
     elsif @attendance.finished_at.nil?
-      if @attendance.update_attributes(finished_at: Time.current.change(sec: 0))
+      if @attendance.update_attributes(finished_at: Time.current.change(sec: 0)) && @attendance.update_attributes(finished_at_original: Time.current.change(sec: 0))
         flash[:info] = "お疲れ様でした。"
       else
         flash[:danger] = UPDATE_ERROR_MSG
@@ -39,28 +39,25 @@ class AttendancesController < ApplicationController
   
   # 勤怠変更申請処理
   def update_one_month
+    #debugger
     ActiveRecord::Base.transaction do # トランザクションを開始します。
       attendances_params.each do |id, item|
-        attendance = Attendance.find(id)
-        if item[:"started_at"]
-          item[:"started_at"] = attendance.worked_on.to_s + " " + item[:"started_at"] + ":00"
-#debugger
-          finish_day = attendance.worked_on
-          finish_day += 1.day if params[:next_day][id] == "1"
-          item[:"finished_at"] = finish_day.to_s + " " + item[:"finished_at"] + ":00"
-#debugger
+        unless item[:"approver"] == ""
+          attendance = Attendance.find(id)
+          if item[:"started_at"]
+            item[:"started_at"] = attendance.worked_on.to_s + " " + item[:"started_at"] + ":00"
+            finish_day = attendance.worked_on
+            finish_day += 1.day if params[:next_day][id] == "1"
+            item[:"finished_at"] = finish_day.to_s + " " + item[:"finished_at"] + ":00"
+          end
+          item[:"status"] = "applying"
+          attendance.update_attributes!(item)
         end
-        
-        item[:"status"] = "applying" unless item[:"approver"] == "" || item[:"status"] == "approved"
-#debugger
-        attendance.update_attributes!(item)
-#debugger
       end
     end
     flash[:success] = "勤怠変更申請を上呈しました。"
     redirect_to user_url(date: params[:date])
   rescue ActiveRecord::RecordInvalid # トランザクションによるエラーの分岐です。
-#debugger
     flash[:danger] = "無効な入力データがあった為、申請をキャンセルしました。"
     redirect_to attendances_edit_one_month_user_url(date: params[:date])
   end
@@ -71,14 +68,11 @@ class AttendancesController < ApplicationController
   
   # 勤怠変更承認処理
   def update_approving_change
-#    debugger
+    #debugger
     approve_change_params.each do |id, item|
-#      debugger
-      if params[:approve][:"#{id}"] == "1"
-#      debugger
+      if params[:approve_change][:"#{id}"] == "1"
         attendance = Attendance.find(id)
         attendance.update_attributes(item)
-#      debugger
       end
     end
     flash[:info] = "勤怠変更申請者に承認結果を送付しました。"
@@ -100,10 +94,9 @@ class AttendancesController < ApplicationController
   
   # 残業申請処理
   def update_overtime
-#    debugger
+    #debugger
     @user = User.find_by(id: params[:user_id])
     @attendance = Attendance.find(params[:id])
-#    debugger
     if params[:attendance][:overtime_finish_at] == ""
       flash[:danger] = "申請エラー。残業時間は必須項目です。"
     else
@@ -121,7 +114,6 @@ class AttendancesController < ApplicationController
         end
       end
     end
-#    debugger
     redirect_to user_url(id: params[:user_id])
   end
   
@@ -131,14 +123,11 @@ class AttendancesController < ApplicationController
   
   # 残業承認処理
   def update_approving_overtime
-#    debugger
+    #debugger
     approve_overtime_params.each do |id, item|
-#      debugger
       if params[:approve_overtime][:"#{id}"] == "1"
-#      debugger
         attendance = Attendance.find(id)
         attendance.update_attributes(item)
-#      debugger
       end
     end
     flash[:info] = "残業申請者に承認結果を送付しました。"

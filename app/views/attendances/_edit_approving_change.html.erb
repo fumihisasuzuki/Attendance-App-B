@@ -6,20 +6,34 @@
     <div class="modal-body" style="margin: 20px">
       <%= form_with(model: @attendances_need_change_approvals, url: attendances_update_approving_change_user_path(@user), local: true, method: :patch) do |f| %>
         <% @users_need_change_approvals.each do |user| %>
-          <h4 style="text-align:center">【<%= user.name %>からの残業申請】</h4>
+          <h4 style="text-align:center">【<%= user.name %>からの勤怠変更申請】</h4>
           <table class="table table-bordered" id="table-approving-overtime">
             <thead>
               <tr>
-                <td>日付</td>
-                <td>曜日</td>
-                <td>開始時刻</td>
-                <td></td>
-                <td>終了時刻</td>
-                <td></td>
-                <td>備考</td>
-                <td>指示者確認㊞</td>
-                <td>変更</td>
-                <td>勤怠を確認する</td>
+                <td rowspan="3">日付</td>
+                <td rowspan="3">曜日</td>
+                <td colspan="4">変更前</td>
+                <td colspan="4">変更後</td>
+                <td rowspan="3">備考</td>
+                <td rowspan="3">指示者確認㊞</td>
+                <td rowspan="3">変更</td>
+                <td rowspan="3">勤怠を確認する</td>
+              </tr>
+              <tr>
+                <td colspan="2">出社</td>
+                <td colspan="2">退社</td>
+                <td colspan="2">出社</td>
+                <td colspan="2">退社</td>
+              </tr>
+              <tr>
+                <td>時</td>
+                <td>分</td>
+                <td>時</td>
+                <td>分</td>
+                <td>時</td>
+                <td>分</td>
+                <td>時</td>
+                <td>分</td>
               </tr>
             </thead>
             <tbody>
@@ -30,6 +44,10 @@
                       <td><%= l(day.worked_on, format: :short) %></td>
                       <td><%= $days_of_the_week[day.worked_on.wday] %></td>
                       <% #debugger %>
+                      <td>時</td>
+                      <td>分</td>
+                      <td>時</td>
+                      <td>分</td>
                       <td><%= l(day.started_at, format: :hour) if day.started_at.present? %></td>
                       <td><%= l(day.started_at.floor_to(time_unit.minutes), format: :minute) if day.started_at.present? %></td>
                       <td><%= l(day.finished_at, format: :hour) if day.finished_at.present? %></td>
