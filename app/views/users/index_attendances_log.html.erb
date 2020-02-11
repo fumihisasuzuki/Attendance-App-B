@@ -1,0 +1,61 @@
+<% provide(:title, '勤怠ログ') %>
+<div class="container">
+  <h1>勤怠ログ</h1>
+  
+  <div>
+    <%= link_to "全件表示", index_attendances_log_user_path(current_user), class: "btn btn-primary" %>
+  </div>
+  
+  
+  <div class="col-md-3">
+    <%= form_with url: index_attendances_log_user_path(current_user), method: :get, local: true do |f| %>
+      <div style="display:inline-flex">
+        <% params[:date] = Date.current unless params[:date] %>
+        <%= f.date_select(
+        :set_date,
+        use_month_numbers: true,
+        start_year: Time.now.year,
+        end_year: (Time.now.year - 10),
+        discard_day: true,
+        default: params[:date].to_date,
+        date_separator: '年') %>月
+        <%= f.submit "年月を指定して表示", class: "btn btn-primary btn-serch" %>
+      </div>
+    <% end %>
+  </div>
+  <div>
+    <table class="table table-bordered table-condensed table-hover" id="table-attendances">
+      <thead>
+        <tr>
+          <td rowspan="2">日付</td>
+          <td colspan="2">変更前</td>
+          <td colspan="2">変更後</td>
+          <td rowspan="2">指示者</td>
+          <td rowspan="2">承認日</td>
+        </tr>  
+        <tr>
+          <td>出社時間</td>
+          <td>退社時間</td>
+          <td>出社時間</td>
+          <td>退社時間</td>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @attendances_log_approved.each do |day| %>
+          <tr>
+            <td><%= l(day.worked_on, format: :standard) %></td>
+            <td><%= l(day.started_at_original, format: :time) if day.started_at_original.present? %></td>
+            <td><%= l(day.finished_at_original, format: :time) if day.finished_at_original.present? %></td>
+            <td><%= l(day.started_at, format: :time) if day.started_at.present? %></td>
+            <td><%= l(day.finished_at, format: :time) if day.finished_at.present? %></td>
+            <td><%= day.approver %></td>
+            <td><%= day.approved_on %></td>
+          </tr>
+        <% end %>
+      </tbody>
+      
+    </table>
+  </div>
+  
+</div>

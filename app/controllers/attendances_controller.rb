@@ -54,6 +54,15 @@ class AttendancesController < ApplicationController
   
   # 勤怠1か月分承認処理
   def update_approving_one_month
+    #debugger
+    approve_one_month_params.each do |id, item|
+      if params[:approve_one_month][:"#{id}"] == "1"
+        attendance = Attendance.find(id)
+        attendance.update_attributes(item)
+      end
+    end
+    flash[:info] = "1ヵ月勤怠申請者に承認結果を送付しました。"
+    redirect_to user_url(date: params[:date])
   end
   
   

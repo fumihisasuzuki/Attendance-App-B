@@ -22,6 +22,7 @@ Rails.application.routes.draw do
       patch 'attendances/update_approving_change'
       get 'attendances/edit_approving_overtime'
       patch 'attendances/update_approving_overtime'
+      get 'index_attendances_log'
     end
     resources :attendances, only: :update do
       member do

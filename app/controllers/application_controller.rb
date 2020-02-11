@@ -7,6 +7,13 @@ class ApplicationController < ActionController::Base
   
   # beforeフィルター
 
+  # date_selectで受け取った年月日情報をdateに代入
+  def set_date
+    if params[:"set_date(1i)"] && params[:"set_date(2i)"] && params[:"set_date(3i)"]
+      params[:date] = params[:"set_date(1i)"]+"-"+params[:"set_date(2i)"]+"-"+params[:"set_date(3i)"]
+    end
+  end
+
   # 現在のユーザー及び承認先上司一覧を取得します。
   def set_user
     @user = User.find(params[:id])
@@ -48,6 +55,7 @@ class ApplicationController < ActionController::Base
 
   # ページ出力前に1ヶ月分のデータの存在を確認・セットします。
   def set_one_month
+#    debugger
     @first_day = params[:date].nil? ?
     Date.current.beginning_of_month : params[:date].to_date
     @last_day = @first_day.end_of_month

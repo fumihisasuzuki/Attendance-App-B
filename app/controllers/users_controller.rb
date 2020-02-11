@@ -1,10 +1,11 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
+  before_action :set_date, only: :index_attendances_log
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info, :index_attendances_log]
   before_action :logged_in_user, except: [:new, :create, :show]
 #  before_action :correct_user, only: [:edit, :update]
   before_action :admin_user, only: [:index, :destroy, :edit_basic_info, :update_basic_info]
   before_action :admin_or_correct_user, only: [:edit, :update]
-  before_action :set_one_month, only: :show
+  before_action :set_one_month, only: [:show, :index_attendances_log]
   before_action :set_attendances_need_one_month_approvals, only: :show
   before_action :set_attendances_need_change_approvals, only: :show
   before_action :set_attendances_need_overtime_approvals, only: :show
@@ -78,7 +79,7 @@ class UsersController < ApplicationController
   end
 
   def index_members_during_work
-    @users_during_work=[]
+    @users_during_work = []
     users = User.all
     users.each do |user|
       attendance_status = user.attendances.find_by(worked_on: Date.current)
@@ -87,6 +88,14 @@ class UsersController < ApplicationController
       end
     end
 #    @users = @users.paginate(page: params[:page], per_page: 20)
+  end
+  
+  def index_attendances_log
+    if params[:date]
+      @attendances_log_approved = @attendances.where(user_id: params[:id]).where.not(approved_on: nil)
+    else
+      @attendances_log_approved = Attendance.where(user_id: params[:id]).where.not(approved_on: nil)
+    end
   end
   
 
