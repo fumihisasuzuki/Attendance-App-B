@@ -7,7 +7,7 @@
       <%= form_with(model: @attendances_need_change_approvals, url: attendances_update_approving_change_user_path(@user), local: true, method: :patch) do |f| %>
         <% @users_need_change_approvals.each do |user| %>
           <h4 style="text-align:center">【<%= user.name %>からの勤怠変更申請】</h4>
-          <table class="table table-bordered" id="table-approving-overtime">
+          <table class="table table-bordered" id="table-approving">
             <thead>
               <tr>
                 <td rowspan="3">日付</td>

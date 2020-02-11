@@ -7,7 +7,7 @@
     <%= form_with(model: @attendance, url: update_overtime_user_attendance_path(@user, @attendance), local: true, method: :patch) do |f| %>
       <%= render 'shared/error_messages', error_variable: @attendance %>
       <div style="margin: 20px">
-        <table class="table table-bordered" id="table-overtime">
+        <table class="table table-bordered" id="table-approving">
           <thead>
             <tr>
               <td>日付</td>

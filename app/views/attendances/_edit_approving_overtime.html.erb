@@ -7,7 +7,7 @@
       <%= form_with(model: @attendances_need_overtime_approvals, url: attendances_update_approving_overtime_user_path(@user), local: true, method: :patch) do |f| %>
         <% @users_need_overtime_approvals.each do |user| %>
           <h4 style="text-align:center">【<%= user.name %>からの残業申請】</h4>
-          <table class="table table-bordered" id="table-approving-overtime">
+          <table class="table table-bordered" id="table-approving">
             <thead>
               <tr>
                 <td>日付</td>

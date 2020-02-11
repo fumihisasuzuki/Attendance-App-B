@@ -144,7 +144,11 @@
             <td><%= working_overtimes(day.regular_end_time, day.overtime_finish_at) %></td>
             <td><%= day.overtime_note %></td>
           <% end %>
-          <td><%= day.approver %><p></p><%= day.status %><p></td>
+          <td>
+            残業：<%= day.overtime_status_i18n %>
+            <p></p>
+            勤怠修正：<%= day.status_i18n %>
+          </td>
         </tr>
       <% end %>
     </tbody>
@@ -161,18 +165,8 @@
         <td colspan="4"></td>
         <td colspan="1">
           <% if current_user?(@user) %>
-            所属長承認
-            <%= case @attendances.first.status_one_month
-                  when "non_one_month"
-                    '未'
-                  when "applying_one_month"
-                    "#{@attendances.first.approver_one_month}へ申請中"
-                  when "approved_one_month"
-                    "#{@attendances.first.approver_one_month}から承認済"
-                  when "not_approved_one_month"
-                    "#{@attendances.first.approver_one_month}により否認"
-                end
-            %>
+            所属長（<%= @attendances.first.approver_one_month %>）
+            <p>の承認状態：<%= @attendances.first.status_one_month_i18n %></p>
             <%= form_with(model: @attendance, url: update_one_month_user_attendance_path(@user, @attendances.first), local: true, method: :patch) do |f| %>
               <%= f.select :approver_one_month, @users_superior.map { |user| user.name }, include_blank: true, class: "form-control" %>
               <%= f.submit "申請", class: "btn btn-primary btn-block" %>

@@ -24,8 +24,11 @@ ja:
         finished_at_original: 退勤時間（初期入力値）
         started_at_applying: 申請出勤時間
         finished_at_applying: 申請退勤時間
+        status: 勤怠情報承認
+        status_one_month: １ヵ月分の勤怠承認
+        overtime_status: 残業申請承認
         note: 備考
-        user: ユーザーID
+        user_id: ユーザーID
       base:
         id: 拠点番号
         name: 拠点名

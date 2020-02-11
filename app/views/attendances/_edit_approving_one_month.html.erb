@@ -7,7 +7,7 @@
       <%= form_with(model: @attendances_need_one_month_approvals, url: attendances_update_approving_one_month_user_path(@user), local: true, method: :patch) do |f| %>
         <% @users_need_one_month_approvals.each do |user| %>
           <h4 style="text-align:center">【<%= user.name %>からの1ヵ月分勤怠申請】</h4>
-          <table class="table table-bordered" id="table-approving-one-month">
+          <table class="table table-bordered" id="table-approving">
             <thead>
               <tr>
                 <td>月</td>
@@ -22,9 +22,9 @@
                   <%= f.fields_for "attendances_need_one_month_approvals[]", day do |attendance| %>
                     <tr>
                       <td><%= "#{day.worked_on.month}月" %></td>
+                      <% #debugger %>
                       <td><%= attendance.select :status_one_month, Attendance.status_one_months.keys.map { |k| [I18n.t("enums.attendance.status_one_month.#{k}"), k]} %></td>
                       <td><%= check_box :approve_one_month, day.id, id: "approve-one-month" %></td>
-                      <% #debugger %>
                       <td><%= link_to "確認", user_url(user), class: "btn btn-primary" %></td>
                     </tr>
                   <% end %>
