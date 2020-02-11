@@ -20,11 +20,11 @@
         <% @bases.each do |base| %>
           <tr>
             <td>
-              <%= link_to "編集", edit_basis_path(base), remote: true, class: "btn btn-primary" %>
+              <%= link_to "修正", edit_basis_path(base), remote: true, class: "btn btn-primary" %>
             </td>
             <td>
               <%= link_to "削除", 
-                bases_path, 
+                basis_path(base), 
                 method: :delete, 
                 data: {confirm: "「#{base.name}」の情報を全て削除します。よろしいですか？"}, 
                 class: "btn btn-primary"
