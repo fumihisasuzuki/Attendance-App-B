@@ -226,6 +226,7 @@ ja:
         applying_overtime: 申請中
         approved_overtime: 承認
         not_approved_overtime: 否認
+  enums:
     base:
       place_type_status:
         in: 出勤

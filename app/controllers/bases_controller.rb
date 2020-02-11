@@ -4,6 +4,8 @@ class BasesController < ApplicationController
   def index
     @bases = Base.all
     @base = Base.new
+    @base_enum_place_type_statuses = Base.place_type_statuses
+#    debugger
   end
 
   def new
@@ -20,6 +22,7 @@ class BasesController < ApplicationController
   end
   
   def edit
+    @base_enum_place_type_statuses = Base.place_type_statuses
   end
   
   def update

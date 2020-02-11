@@ -5,7 +5,8 @@
   <%= f.text_field :name, class: "form-control" %>
   
   <%= f.label :place_type_status, class: "label-#{yield(:class_text)}" %>
-  <%= f.select :place_type_status, ["in", "out"] %>
-
+  <% #debugger %>
+  <%= f.select :place_type_status, @base_enum_place_type_statuses.keys.map { |k| [I18n.t("enums.base.place_type_status.#{k}"), k]} %>
+   
   <%= f.submit yield(:button_text), class: "btn btn-primary btn-block btn-#{yield(:class_text)}" %>
 <% end %>
