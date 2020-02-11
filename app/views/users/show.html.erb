@@ -31,25 +31,28 @@
 
 <% if current_user?(@user) %>
   <% if current_user.superior? %>
-    <div>
+    <div class="notice">
       <% if @attendances_need_one_month_approvals.count == 0 %>
         (1か月分承認申請のお知らせはありません)
       <% else %>
-        <%= link_to "【1か月分承認申請のお知らせ】：#{@attendances_need_one_month_approvals.count}件の通知があります！", attendances_edit_approving_one_month_user_path(@user), remote: true, class: "" %>
+        <%= link_to "【1か月分承認申請のお知らせ】：#{@attendances_need_one_month_approvals.count}件の通知があります！", 
+            attendances_edit_approving_one_month_user_path(@user), remote: true %>
       <% end %>
     </div>
-    <div>
+    <div class="notice">
       <% if @attendances_need_change_approvals.count == 0 %>
         (勤怠変更申請のお知らせはありません)
       <% else %>
-        <%= link_to "【勤怠変更申請のお知らせ】：#{@attendances_need_change_approvals.count}件の通知があります！", attendances_edit_approving_change_user_path(@user), remote: true, class: "" %>
+        <%= link_to "【勤怠変更申請のお知らせ】：#{@attendances_need_change_approvals.count}件の通知があります！", 
+            attendances_edit_approving_change_user_path(@user), remote: true, class: "" %>
       <% end %>
     </div>
-    <div>
+    <div class="notice">
       <% if @attendances_need_overtime_approvals.count == 0 %>
         (残業申請のお知らせはありません)
       <% else %>
-        <%= link_to "【残業申請のお知らせ】：#{@attendances_need_overtime_approvals.count}件の通知があります！", attendances_edit_approving_overtime_user_path(@user), remote: true, class: "" %>
+        <%= link_to "【残業申請のお知らせ】：#{@attendances_need_overtime_approvals.count}件の通知があります！", 
+            attendances_edit_approving_overtime_user_path(@user), remote: true, class: "" %>
       <% end %>
     </div>
   <% end %>

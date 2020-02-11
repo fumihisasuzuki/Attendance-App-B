@@ -102,6 +102,7 @@ class AttendancesController < ApplicationController
           item[:"status"] = "applying"
 #debugger
           attendance.update_attributes!(item)
+#debugger
         end
       end
     end

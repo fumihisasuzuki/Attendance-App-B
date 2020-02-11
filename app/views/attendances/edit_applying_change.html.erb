@@ -43,9 +43,9 @@
                 <td><%= attendance.time_field :finished_at, class: "form-control" %></td>
                 <% #debugger %>
                 <% if overtime_next_day(day.started_at, day.finished_at) %>
-                  <td><%= check_box :next_day, day.id, default: true, id: "next-day" %></td>
+                  <td><%= check_box :next_day, day.id, {checked: true}, "1", "0" %></td>
                 <% else %>
-                  <td><%= check_box :next_day, day.id, id: "next-day" %></td>
+                  <td><%= check_box :next_day, day.id, {}, "1", "0" %></td>
                 <% end %>
                 <td>
                   <% if day.started_at.present? && day.finished_at.present? %>
