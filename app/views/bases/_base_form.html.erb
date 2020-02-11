@@ -1,0 +1,11 @@
+<%= form_with(model: model, local: true) do |f| %>
+  <%= render 'shared/error_messages', error_variable: model %>
+  
+  <%= f.label :name, class: "label-#{yield(:class_text)}" %>
+  <%= f.text_field :name, class: "form-control" %>
+  
+  <%= f.label :place_type_status, class: "label-#{yield(:class_text)}" %>
+  <%= f.select :place_type_status, ["in", "out"] %>
+
+  <%= f.submit yield(:button_text), class: "btn btn-primary btn-block btn-#{yield(:class_text)}" %>
+<% end %>

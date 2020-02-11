@@ -1,0 +1,73 @@
+<% provide(:title, '拠点一覧') %>
+<% provide(:class_text, 'base') %>
+<% provide(:button_text, '拠点を追加') %>
+<div class="container">
+  <h1>拠点一覧</h1>
+  
+  <div>
+    <table class="table table-bordered table-condensed table-hover" id="table-attendances">
+      <thead>
+        <tr>
+          <td></td>
+          <td></td>
+          <td>拠点番号</td>
+          <td>拠点名</td>
+          <td>勤怠種類</td>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @bases.each do |base| %>
+          <tr>
+            <td>
+              <%= link_to "編集", edit_basis_path(base), remote: true, class: "btn btn-primary" %>
+            </td>
+            <td>
+              <%= link_to "削除", 
+                bases_path, 
+                method: :delete, 
+                data: {confirm: "「#{base.name}」の情報を全て削除します。よろしいですか？"}, 
+                class: "btn btn-primary"
+              %>
+            </td>
+            <td><%= base.id %></td>
+            <td><%= base.name %></td>
+            <td><%= base.place_type_status %></td>
+          </tr>
+        <% end %>
+      </tbody>
+      
+    </table>
+  </div>
+  
+  <div>
+    <tr>
+      <td style="background: #EEEEEE;">
+        <div class="accordion" id="accordion" role="tablist" aria-multiselectable="true">
+          <div class="card">
+            <% headingid="heading" %>
+            <% collapseid_for_href="#collapse" %>
+            <% collapseid="collapse" %>
+            <div class="card-header" role="tab" id="<%= headingid %>">
+              <h5 class="mb-0">
+                <a class="btn btn-primary btn-lg" data-toggle="collapse" href="<%= collapseid_for_href %>" role= aria-expanded="false" aria-controls="<%= collapseid %>">
+                  拠点情報追加
+                </a>
+              </h5>
+            </div><!-- /.card-header -->
+            <div id="<%= collapseid %>" class="collapse data-parent" role="tabpanel" aria-labelledby="<%= headingid %>" data-parent="#accordion">
+              <div class="card-body">
+                <%= render 'base_form', model: @base %>
+              </div><!-- /.card-body -->
+            </div><!-- /.collapse -->
+          </div><!-- /.card -->
+        </div><!-- /.accordion -->
+      </td>
+    </tr>
+  </div>
+          
+</div>
+
+
+<!--モーダルウインドウ表示-->
+<div id="edit-basis" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

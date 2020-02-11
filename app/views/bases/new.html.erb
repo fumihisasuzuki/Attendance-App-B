@@ -1,2 +1,10 @@
-<h1>Bases#new</h1>
-<p>Find me in app/views/bases/new.html.erb</p>
+<% provide(:title, 'Sign up') %>
+<% provide(:class_text, 'signup') %>
+<% provide(:button_text, '作成') %>
+<h1>拠点情報の追加</h1>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <%= render 'user_form' %>
+  </div>
+</div>

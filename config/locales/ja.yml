@@ -212,17 +212,22 @@ ja:
   enums:
     attendance:
       status:
-          non: なし
-          applying: 申請中
-          approved: 承認
-          not_approved: 否認
+        non: なし
+        applying: 申請中
+        approved: 承認
+        not_approved: 否認
       status_one_month:
-          non_one_month: なし
-          applying_one_month: 申請中
-          approved_one_month: 承認
-          not_approved_one_month: 否認
+        non_one_month: なし
+        applying_one_month: 申請中
+        approved_one_month: 承認
+        not_approved_one_month: 否認
       overtime_status:
-          non_overtime: なし
-          applying_overtime: 申請中
-          approved_overtime: 承認
-          not_approved_overtime: 否認
+        non_overtime: なし
+        applying_overtime: 申請中
+        approved_overtime: 承認
+        not_approved_overtime: 否認
+    base:
+      place_type_status:
+        in: 出勤
+        out: 退勤
+        

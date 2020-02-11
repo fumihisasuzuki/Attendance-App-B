@@ -29,4 +29,4 @@ ja:
       base:
         id: 拠点番号
         name: 拠点名
-        type: 拠点種類
+        place_type_status: 拠点種類
