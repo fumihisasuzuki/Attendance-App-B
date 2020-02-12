@@ -85,7 +85,11 @@ class UsersController < ApplicationController
   def import
     # fileはtmpに自動で一時保存される
     User.import(params[:file])
-    flash[:success] = "#{:file}をインポートしました。"
+    if params[:file]
+      flash[:success] = "#{:file}をインポートしました。"
+    else
+      flash[:danger] = "ファイルを選択してください。"
+    end
     redirect_to users_url
   end
 
