@@ -1,17 +1,22 @@
 class UsersController < ApplicationController
+  # 変数セット
   before_action :set_date, only: :index_attendances_log
   before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info, :index_attendances_log]
-  before_action :logged_in_user, except: [:new, :create, :show]
-#  before_action :correct_user, only: [:edit, :update]
-  before_action :admin_user, only: [:index, :destroy, :edit_basic_info, :update_basic_info]
-  before_action :admin_or_correct_user, only: [:edit, :update]
   before_action :set_one_month, only: [:show, :index_attendances_log]
   before_action :set_attendances_need_one_month_approvals, only: :show
   before_action :set_attendances_need_change_approvals, only: :show
   before_action :set_attendances_need_overtime_approvals, only: :show
+
+  # アクセス制限  
+  before_action :logged_in_user, except: [:new, :create, :show]
+#  before_action :correct_user, only: []
+#  before_action :admin_user, only: [:index, :destroy, :index_members_during_work, :edit_basic_info, :update_basic_info]
+  before_action :admin_user, except: [:show, :index_attendances_log, :edit, :update]
+  before_action :not_admin_user, only: [:show, :index_attendances_log]
+  before_action :admin_or_correct_user, only: [:edit, :update]
   
   def index
-    @users = User.paginate(page: params[:page], per_page: 20).search(params[:searchword])
+    @users = User.paginate(page: params[:page], per_page: 20).search(params[:searchword]).where.not(id: current_user.id)
   end
   
   def new
@@ -46,9 +51,14 @@ class UsersController < ApplicationController
   end
   
   def update
+#    debugger
     if @user.update_attributes(user_params)
       flash[:success] = @user.name + 'のアカウント情報更新に成功しました。'
-      redirect_to @user
+      if current_user.admin?
+        redirect_to users_url
+      else
+        redirect_to @user
+      end
     else
       render :edit
     end
@@ -110,13 +120,13 @@ class UsersController < ApplicationController
                                    :uid,
                                    :password,
                                    :password_confirmation,
-                                   :basic_time,
+                                   :basic_work_time,
                                    :designated_work_start_time,
                                    :designated_work_end_time)
     end
     
     def basic_info_params
-      params.require(:user).permit(:basic_time, :work_time)
+      params.require(:user).permit(:basic_work_time, :work_time)
     end
   
 end

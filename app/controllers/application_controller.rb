@@ -43,6 +43,14 @@ class ApplicationController < ActionController::Base
       redirect_to(root_url)
     end
   end
+  
+  # 現在ログインしているユーザーが一般or上長（管理者でない）か確認します。
+  def not_admin_user
+    if current_user.admin?
+      flash[:success] = "管理者としてログイン中。※管理者に勤怠情報はありません。"
+      redirect_to(root_url)
+    end
+  end
     
   # 管理権限者、または現在ログインしているユーザーを許可します。
   def admin_or_correct_user

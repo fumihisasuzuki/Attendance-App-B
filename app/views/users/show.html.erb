@@ -4,9 +4,9 @@
     <tr>
       <td>
         <div>
-          <%= link_to "←", user_path(date: @first_day.prev_month), class: "btn btn-primary" %>
+          <%= link_to "←", user_path(date: @first_day.prev_month), class: "btn btn-primary" if current_user?(@user) %>
           <%= l(@first_day, format: :middle) %>時間管理表
-          <%= link_to "→", user_path(date: @first_day.next_month), class: "btn btn-primary" %>
+          <%= link_to "→", user_path(date: @first_day.next_month), class: "btn btn-primary" if current_user?(@user) %>
         </div>
       </td>
       <td>
@@ -149,8 +149,10 @@
           <% end %>
           <td>
             残業：<%= day.overtime_status_i18n %>
+            <%= "（ #{day.overtime_approver}）" if day.overtime_approver.present? %>
             <p></p>
             勤怠修正：<%= day.status_i18n %>
+            <%= "（ #{day.approver}）" if day.approver.present? %>
           </td>
         </tr>
       <% end %>

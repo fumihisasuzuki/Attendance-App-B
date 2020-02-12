@@ -2,6 +2,7 @@ class AttendancesController < ApplicationController
   before_action :set_user, only: [:edit_approving_one_month, :update_approving_one_month, :edit_applying_change, :update_applying_change, :edit_approving_overtime, :update_approving_overtime, :edit_approving_change, :update_approving_change]
   before_action :logged_in_user, only: [:update, :edit_applying_change]
   before_action :set_one_month, only: [:edit_applying_change, :update_applying_change]
+  before_action :not_admin_user
   before_action :admin_or_correct_user, only: [:update, :edit_applying_change, :update_applying_change]
   before_action :set_users_need_one_month_approvals, only: [:edit_approving_one_month, :update_approving_one_month]
   before_action :set_users_need_change_approvals, only: [:edit_approving_change, :update_approving_change]
@@ -38,11 +39,15 @@ class AttendancesController < ApplicationController
 #    debugger
     @user = User.find_by(id: params[:user_id])
     @attendance = Attendance.find(params[:id])
-    if @attendance.update_attributes(approver_one_month: params[:approver_one_month])
-      @attendance.update_attributes(status_one_month: "applying_one_month")
-      flash[:info] = "#{@attendance.worked_on.month}月分の承認依頼を#{@attendance.approver_one_month}に申請しました。"
+    if params[:approver_one_month] == ""
+      flash[:danger] = "申請する上長を選んでください。"
     else
-      flash[:danger] = "申請エラー。#{@attendance.worked_on.month}月分の承認依頼に失敗しました。承認先を正しく選んでください。"
+      if @attendance.update_attributes(approver_one_month: params[:approver_one_month])
+        @attendance.update_attributes(status_one_month: "applying_one_month")
+        flash[:info] = "#{@attendance.worked_on.month}月分の承認依頼を#{@attendance.approver_one_month}に申請しました。"
+      else
+        flash[:danger] = "申請エラー。#{@attendance.worked_on.month}月分の承認依頼に失敗しました。申請する上長を正しく選んでください。"
+      end
     end
 #    debugger
     redirect_to user_url(id: params[:user_id])
@@ -106,7 +111,7 @@ class AttendancesController < ApplicationController
         end
       end
     end
-    flash[:success] = "勤怠変更申請を上呈しました。"
+    flash[:success] = "勤怠変更申請を上呈しました。（上長が空欄の日は申請されていません。）"
     redirect_to user_url(date: params[:date])
   rescue ActiveRecord::RecordInvalid # トランザクションによるエラーの分岐です。
     flash[:danger] = "無効な入力データがあった為、申請をキャンセルしました。"
@@ -132,7 +137,7 @@ class AttendancesController < ApplicationController
         attendance.update_attributes(item)
       end
     end
-    flash[:info] = "勤怠変更申請者に承認結果を送付しました。"
+    flash[:info] = "勤怠変更申請者に承認結果を送付しました。（ただし、「変更」チェックボックスが空欄のデータは送付していません。）"
     redirect_to user_url(date: params[:date])
   end
   
@@ -187,7 +192,7 @@ class AttendancesController < ApplicationController
         attendance.update_attributes(item)
       end
     end
-    flash[:info] = "残業申請者に承認結果を送付しました。"
+    flash[:info] = "残業申請者に承認結果を送付しました。（ただし、「変更」チェックボックスが空欄のデータは送付していません。）"
     redirect_to user_url(date: params[:date])
   end
   
