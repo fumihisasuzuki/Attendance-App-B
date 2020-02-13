@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
   # 現在のユーザー及び承認先上司一覧を取得します。
   def set_user
     @user = User.find(params[:id])
-    @users_superior = User.where(superior: true).where.not(id: params[:id])
+    @users_superior = User.where(superior: true).where.not(id: params[:id]).order(:id)
   end
     
   # ログイン済みのユーザーか確認します。
@@ -122,19 +122,19 @@ class ApplicationController < ActionController::Base
     
   # @userに1ヵ月分の承認申請を上呈している勤怠情報一覧
   def set_attendances_need_one_month_approvals
-    @attendances_need_one_month_approvals = Attendance.includes(:user).references(:user).where(approver_one_month: @user.name).where(status_one_month: 1)
+    @attendances_need_one_month_approvals = Attendance.includes(:user).references(:user).where(approver_one_month: @user.name).where(status_one_month: 1).order(:id)
     #debugger
   end
   
   # @userに勤怠変更申請を上呈している勤怠情報一覧
   def set_attendances_need_change_approvals
-    @attendances_need_change_approvals = Attendance.includes(:user).references(:user).where(approver: @user.name).where(status: 1)
+    @attendances_need_change_approvals = Attendance.includes(:user).references(:user).where(approver: @user.name).where(status: 1).order(:id)
     #debugger
   end
   
   # @userに残業申請を上呈している勤怠情報一覧
   def set_attendances_need_overtime_approvals
-    @attendances_need_overtime_approvals = Attendance.includes(:user).references(:user).where(overtime_approver: @user.name).where(overtime_status: 1)
+    @attendances_need_overtime_approvals = Attendance.includes(:user).references(:user).where(overtime_approver: @user.name).where(overtime_status: 1).order(:id)
     #debugger
   end
   
