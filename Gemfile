@@ -20,6 +20,8 @@ gem 'enum' # enumメソッドを使える
 gem 'enum_help' # enumメソッドの日本語化
 gem 'tod' # Tod::TimeOfDayクラスを用いて、時刻だけのオブジェクトを扱える。
 
+ruby '2.6.3'
+
 group :development, :test do
   gem 'sqlite3'
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
@@ -33,9 +35,9 @@ group :development do
 end
 
 # Herokuへデプロイするときに復活させる。
-# group :production do
-#   gem 'pg', '0.20.0'
-# end
+group :production do
+  gem 'pg', '0.20.0'
+end
 
 # Windows環境ではtzinfo-dataというgemを含める必要があります
 # Mac環境でもこのままでOKです

@@ -85,17 +85,15 @@ class AttendancesController < ApplicationController
         unless item[:"approver"] == "" # 上司を選ばないと申請できない。
           attendance = Attendance.find(id)
 #debugger
-          # started_atに入力があった場合に、started_atを整え、初めての入力であればoriginalにその値を代入する。
+          # started_atに入力があった場合に、started_atを整える。
           if item[:"started_at"]
             item[:"started_at"] = attendance.worked_on.to_s + " " + item[:"started_at"] + ":00"
-            item[:"started_at_original"] = item[:"started_at"] unless attendance.started_at_original
           end
-          # finished_atに入力があった場合に、finished_atを整え、初めての入力であればoriginalにその値を代入する。
+          # finished_atに入力があった場合に、finished_atを整え、実績がnilであればoriginalにその値を代入する。
           if item[:"finished_at"]
             finish_day = attendance.worked_on
             finish_day += 1.day if params[:next_day][id] == "1"
             item[:"finished_at"] = finish_day.to_s + " " + item[:"finished_at"] + ":00"
-            item[:"finished_at_original"] = item[:"finished_at"] unless attendance.finished_at_original
           end
           # applyingに申請値を代入
           item[:"started_at_applying"] = item[:"started_at"]
@@ -103,10 +101,18 @@ class AttendancesController < ApplicationController
           # 現状（申請前）の値を保存
           item[:"started_at"] = attendance.started_at
           item[:"finished_at"] = attendance.finished_at
-          # 更新及び申請
-          item[:"status"] = "applying"
+          # 初めての更新（originalがnil）であれば、originalに現状（申請前）の値を保存
+          item[:"started_at_original"] = attendance.started_at unless attendance.started_at_original
+          item[:"finished_at_original"] = attendance.finished_at unless attendance.finished_at_original
 #debugger
+          # 更新
           attendance.update_attributes!(item)
+#debugger
+          # 更新で勤怠に変更があれば、申請する。
+          unless attendance.started_at == attendance.started_at_applying && attendance.finished_at == attendance.finished_at_applying
+            item[:"status"] = "applying"
+            attendance.update_attributes!(item)
+          end
 #debugger
         end
       end
@@ -132,7 +138,7 @@ class AttendancesController < ApplicationController
           # applyingの申請値を実際の勤怠情報に反映
           item[:"started_at"] = attendance.started_at_applying
           item[:"finished_at"] = attendance.finished_at_applying
-          item[:"approved_on"] = Time.current.change(sec: 0)
+          item[:"approved_on"] = Time.current.change(sec: 0) # if attendance.started_at.present? || attendance.finished_at.present?
         end
         attendance.update_attributes(item)
       end
