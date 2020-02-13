@@ -35,7 +35,7 @@
                       <td><%= day.overtime_note %></td>
                       <td><%= attendance.select :overtime_status, Attendance.overtime_statuses.keys.map { |k| [I18n.t("enums.attendance.overtime_status.#{k}"), k]} %></td>
                       <td><%= check_box :approve_overtime, day.id, id: "approve-overtime" %></td>
-                      <td><%= link_to "確認", user_url(user), class: "btn btn-primary" %></td>
+                      <td><%= link_to "確認", user_url(user, date: day.worked_on), class: "btn btn-primary" %></td>
                     </tr>
                   <% end %>
                 <% end %>

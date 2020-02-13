@@ -65,7 +65,8 @@ class ApplicationController < ActionController::Base
   def set_one_month
 #    debugger
     @first_day = params[:date].nil? ?
-    Date.current.beginning_of_month : params[:date].to_date
+    Date.current.beginning_of_month : params[:date].to_date.beginning_of_month
+#    debugger
     @last_day = @first_day.end_of_month
     one_month = [*@first_day..@last_day] # 対象の月の日数を代入します。
     # ユーザーに紐付く一ヶ月分のレコードを検索し取得します。

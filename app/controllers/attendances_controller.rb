@@ -176,7 +176,8 @@ class AttendancesController < ApplicationController
         end
       end
     end
-    redirect_to user_url(id: params[:user_id])
+#    debugger
+    redirect_to user_url(date: @attendance.overtime_finish_at, id: params[:user_id])
   end
   
   # 残業承認ページ

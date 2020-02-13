@@ -55,7 +55,7 @@
                       <td><%= day.note %></td>
                       <td><%= attendance.select :status, Attendance.statuses.keys.map { |k| [I18n.t("enums.attendance.status.#{k}"), k]} %></td>
                       <td><%= check_box :approve_change, day.id, id: "approve-change" %></td>
-                      <td><%= link_to "確認", user_url(user), class: "btn btn-primary" %></td>
+                      <td><%= link_to "確認", user_url(user, date: day.worked_on), class: "btn btn-primary" %></td>
                     </tr>
                   <% end %>
                 <% end %>
