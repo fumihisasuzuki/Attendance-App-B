@@ -16,7 +16,7 @@ class UsersController < ApplicationController
   before_action :admin_or_correct_user, only: [:edit, :update]
   
   def index
-    @users = User.paginate(page: params[:page], per_page: 20).search(params[:searchword]).where.not(id: current_user.id)
+    @users = User.paginate(page: params[:page], per_page: 20).search(params[:searchword]).where.not(id: current_user.id).order(:id)
   end
   
   def new

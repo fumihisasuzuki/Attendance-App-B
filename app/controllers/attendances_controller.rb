@@ -95,6 +95,11 @@ class AttendancesController < ApplicationController
             finish_day += 1.day if params[:next_day][id] == "1"
             item[:"finished_at"] = finish_day.to_s + " " + item[:"finished_at"] + ":00"
           end
+          
+          # 更新で勤怠に変更がない場合は申請の意思がないと考え、applyingの情報は据え置く。
+          started_at_save = attendance.started_at_applying
+          finished_at_save = attendance.finished_at_applying
+          
           # applyingに申請値を代入
           item[:"started_at_applying"] = item[:"started_at"]
           item[:"finished_at_applying"] = item[:"finished_at"]
@@ -102,17 +107,22 @@ class AttendancesController < ApplicationController
           item[:"started_at"] = attendance.started_at
           item[:"finished_at"] = attendance.finished_at
           # 初めての更新（originalがnil）であれば、originalに現状（申請前）の値を保存
-          item[:"started_at_original"] = attendance.started_at unless attendance.started_at_original
-          item[:"finished_at_original"] = attendance.finished_at unless attendance.finished_at_original
+          item[:"started_at_original"] = attendance.started_at if attendance.started_at_original.blank?
+          item[:"finished_at_original"] = attendance.finished_at if attendance.finished_at_original.blank?
 #debugger
           # 更新
           attendance.update_attributes!(item)
 #debugger
           # 更新で勤怠に変更があれば、申請する。
-          unless attendance.started_at == attendance.started_at_applying && attendance.finished_at == attendance.finished_at_applying
+          if attendance.started_at == attendance.started_at_applying && attendance.finished_at == attendance.finished_at_applying && attendance.status != "not_approved"
+            item[:"started_at_applying"] = started_at_save
+            item[:"finished_at_applying"] = finished_at_save
+          else
             item[:"status"] = "applying"
-            attendance.update_attributes!(item)
           end
+          
+          # 再び更新
+          attendance.update_attributes!(item)
 #debugger
         end
       end
