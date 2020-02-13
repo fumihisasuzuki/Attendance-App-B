@@ -45,10 +45,10 @@
         <% @attendances_log_approved.each do |day| %>
           <tr>
             <td><%= l(day.worked_on, format: :standard) %></td>
-            <td><%= l(day.started_at_original, format: :time) if day.started_at_original.present? %></td>
-            <td><%= l(day.finished_at_original, format: :time) if day.finished_at_original.present? %></td>
-            <td><%= l(day.started_at, format: :time) if day.started_at.present? %></td>
-            <td><%= l(day.finished_at, format: :time) if day.finished_at.present? %></td>
+            <td><%= l(day.started_at_original.floor_to(time_unit.minutes), format: :time) if day.started_at_original.present? %></td>
+            <td><%= l(day.finished_at_original.floor_to(time_unit.minutes), format: :time) if day.finished_at_original.present? %></td>
+            <td><%= l(day.started_at.floor_to(time_unit.minutes), format: :time) if day.started_at.present? %></td>
+            <td><%= l(day.finished_at.floor_to(time_unit.minutes), format: :time) if day.finished_at.present? %></td>
             <td><%= day.approver %></td>
             <td><%= day.approved_on %></td>
           </tr>

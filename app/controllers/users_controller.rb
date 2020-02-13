@@ -8,10 +8,10 @@ class UsersController < ApplicationController
   before_action :set_attendances_need_overtime_approvals, only: :show
 
   # アクセス制限  
-  before_action :logged_in_user, except: [:new, :create, :show]
+  before_action :logged_in_user, except: [:new, :create]
 #  before_action :correct_user, only: []
 #  before_action :admin_user, only: [:index, :destroy, :index_members_during_work, :edit_basic_info, :update_basic_info]
-  before_action :admin_user, except: [:show, :index_attendances_log, :edit, :update]
+  before_action :admin_user, except: [:new, :create, :show, :index_attendances_log, :edit, :update]
   before_action :not_admin_user, only: [:show, :index_attendances_log]
   before_action :admin_or_correct_user, only: [:edit, :update]
   
