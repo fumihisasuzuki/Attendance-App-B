@@ -7,7 +7,7 @@ gem 'faker' # 実際に存在していそうな名前を生成
 gem 'bootstrap-sass' # bootstrap
 gem 'will_paginate' # ページネーション
 gem 'bootstrap-will_paginate' # ページネーションにbootstrapを適用
-gem 'puma',         '~> 3.7'
+gem 'puma',         '~> 3.12'
 gem 'sass-rails',   '~> 5.0'
 gem 'uglifier',     '>= 1.3.0'
 gem 'coffee-rails', '~> 4.2'
